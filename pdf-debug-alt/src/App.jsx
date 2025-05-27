@@ -5,6 +5,7 @@ import FileDropzone from "./components/FileDropzone";
 import SigningSteps from "./components/SigningSteps";
 import StatusIndicator from "./components/StatusIndicator";
 import PdfPreview from "./components/PdfPreview";
+import { usePdfSigner } from "./hooks/usePdfSigner";
 import "./styles/index.css";
 
 function App() {
@@ -12,26 +13,36 @@ function App() {
   const [address, setAddress] = useState("");
   const [status, setStatus] = useState("idle");
   const [file, setFile] = useState(null);
+  const { signPdf, signingStatus, signatureData, error, reset } =
+    usePdfSigner();
 
-  const handleConnect = () => {
-    setStatus("idle");
+  const handleConnect = (address) => {
+    // setStatus("idle");
     setIsConnected(true);
     setAddress(address);
+    reset();
   };
 
   const handleDisconnect = () => {
     setIsConnected(false);
     setAddress("");
     setFile(null);
-    setStatus("idle");
+    reset();
+    // setStatus("idle");
   };
 
-  const handleFileAccepted = (file) => {
+  const handleFileAccepted = async (file) => {
+    if (!file) {
+      setFile(null);
+      reset();
+      return;
+    }
     setFile(file);
-    setStatus("uploading");
-    // Simulate signing process for UI demo
-    setTimeout(() => setStatus("signing"), 1000);
-    setTimeout(() => setStatus("success"), 3000);
+    try {
+      await signPdf(file, address);
+    } catch (err) {
+      console.log("Signing failed:", err);
+    }
   };
 
   const currentStep = isConnected
@@ -39,10 +50,10 @@ function App() {
       ? status === "success"
         ? 4
         : status === "signing"
-        ? 3
-        : 2
-      : 1
-    : 0;
+        ? 3 //Signing
+        : 2 //File Uploaded
+      : 1 //Wallet Connected
+    : 0; //Not Started
 
   return (
     <div className="container">
@@ -57,12 +68,19 @@ function App() {
         <>
           <FileDropzone
             onFileAccepted={handleFileAccepted}
-            disabled={status === "signing" || status === "uploading"}
+            disabled={
+              signingStatus === "signing" || signingStatus === "Preparing"
+            }
             file={file}
           />
           {/* Handling file preview  */}
           {file && <PdfPreview file={file} />}
-          <StatusIndicator status={status} file={file} />
+          <StatusIndicator
+            status={signingStatus}
+            file={file}
+            signatureData={signatureData}
+            error={error}
+          />
           <SigningSteps currentStep={currentStep} />
         </>
       )}
