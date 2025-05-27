@@ -16,7 +16,7 @@ function App() {
   const handleConnect = () => {
     setStatus("idle");
     setIsConnected(true);
-    setAddress("0x742d35Cc6634C0532925a3b844Bc454e4438f44e"); // Mock address for UI
+    setAddress(address);
   };
 
   const handleDisconnect = () => {
