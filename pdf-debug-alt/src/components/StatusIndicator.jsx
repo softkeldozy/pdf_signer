@@ -62,6 +62,41 @@ const StatusIndicator = ({ status, file }) => {
           </p>
         </div>
       )}
+
+      {/* error display here */}
+      {status === "error" && (
+        <div
+          style={{
+            backgroundColor: "#fef2f2",
+            padding: "1rem",
+            borderRadius: "var(--border-radius)",
+            marginTop: "1rem",
+            color: "var(--danger)",
+          }}
+        >
+          <p>
+            <strong>Error:</strong> {error?.message || "Signing failed"}
+          </p>
+
+          {/* Conditional error guidance */}
+          {error?.message?.includes("Insufficient funds") && (
+            <p style={{ marginTop: "0.5rem" }}>
+              Please add ETH to your wallet to cover transaction fees
+            </p>
+          )}
+          {error?.message?.includes("gas") && (
+            <p style={{ marginTop: "0.5rem" }}>
+              Try reducing the file size or waiting for lower network congestion
+            </p>
+          )}
+          {error?.message?.includes("rejected") && (
+            <p style={{ marginTop: "0.5rem" }}>
+              You need to approve the transaction in your wallet
+            </p>
+          )}
+        </div>
+      )}
+
       {status === "success" && signatureData && (
         <div style={{ marginTop: "1rem" }}>
           <p>

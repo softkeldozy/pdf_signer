@@ -48,10 +48,11 @@ export const usePdfSigner = () => {
 
       return response;
     } catch (err) {
-      console.error("Signing error:", err);
-      setError(err);
+      const errorMessage = handleSigningError(err);
+      const formattedError = new Error(errorMessage);
+      setError(formattedError);
       setSigningStatus("error");
-      throw err;
+      throw formattedError;
     }
   };
 

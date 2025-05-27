@@ -6,6 +6,8 @@ import SigningSteps from "./components/SigningSteps";
 import StatusIndicator from "./components/StatusIndicator";
 import PdfPreview from "./components/PdfPreview";
 import { usePdfSigner } from "./hooks/usePdfSigner";
+import VerifySignature from "./components/VerifySignature";
+import useDocumentHistory from "./hooks/useDocumentHistory";
 import "./styles/index.css";
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
   const [file, setFile] = useState(null);
   const { signPdf, signingStatus, signatureData, error, reset } =
     usePdfSigner();
+  const { documents, addDocument, clearHistory } = useDocumentHistory();
 
   const handleConnect = (address) => {
     // setStatus("idle");
@@ -42,6 +45,14 @@ function App() {
       await signPdf(file, address);
     } catch (err) {
       console.log("Signing failed:", err);
+    }
+    if (status === "success" && signatureData) {
+      addDocument({
+        id: signatureData.documentId,
+        name: file.name,
+        date: new Date().toISOString(),
+        txHash: signatureData.transactionHash,
+      });
     }
   };
 
@@ -82,6 +93,8 @@ function App() {
             error={error}
           />
           <SigningSteps currentStep={currentStep} />
+          <VerifySignature />
+          <DocumentHistory documents={documents} clearHistory={clearHistory} />
         </>
       )}
     </div>
