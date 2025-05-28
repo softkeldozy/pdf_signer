@@ -4,23 +4,20 @@ import WalletButton from "./components/WalletButton";
 import FileDropzone from "./components/FileDropzone";
 import SigningSteps from "./components/SigningSteps";
 import StatusIndicator from "./components/StatusIndicator";
-import PdfPreview from "./components/PdfPreview";
-import { usePdfSigner } from "./hooks/usePdfSigner";
-import VerifySignature from "./components/VerifySignature";
+// import PdfPreview from "./components/PdfPreview";
+// import { usePdfSigner } from "./hooks/usePdfSigner";
 import useDocumentHistory from "./hooks/useDocumentHistory";
-import "./styles/index.css";
+import "../src/App.css";
 
 function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
-  const [status, setStatus] = useState("idle");
   const [file, setFile] = useState(null);
-  const { signPdf, signingStatus, signatureData, error, reset } =
-    usePdfSigner();
+  // const { signPdf, signingStatus, signatureData, error, reset } =
+  //   usePdfSigner();
   const { documents, addDocument, clearHistory } = useDocumentHistory();
 
   const handleConnect = (address) => {
-    // setStatus("idle");
     setIsConnected(true);
     setAddress(address);
     reset();
@@ -31,7 +28,6 @@ function App() {
     setAddress("");
     setFile(null);
     reset();
-    // setStatus("idle");
   };
 
   const handleFileAccepted = async (file) => {
@@ -42,29 +38,27 @@ function App() {
     }
     setFile(file);
     try {
-      await signPdf(file, address);
-    } catch (err) {
-      console.log("Signing failed:", err);
-    }
-    if (status === "success" && signatureData) {
+      const result = await signPdf(file, address);
       addDocument({
-        id: signatureData.documentId,
+        id: result.documentId,
         name: file.name,
         date: new Date().toISOString(),
-        txHash: signatureData.transactionHash,
+        txHash: result.transactionHash,
       });
+    } catch (err) {
+      console.error("Signing failed:", err);
     }
   };
 
   const currentStep = isConnected
     ? file
-      ? status === "success"
+      ? signingStatus === "success"
         ? 4
-        : status === "signing"
-        ? 3 //Signing
-        : 2 //File Uploaded
-      : 1 //Wallet Connected
-    : 0; //Not Started
+        : signingStatus === "signing"
+        ? 3
+        : 2
+      : 1
+    : 0;
 
   return (
     <div className="container">
@@ -79,12 +73,9 @@ function App() {
         <>
           <FileDropzone
             onFileAccepted={handleFileAccepted}
-            disabled={
-              signingStatus === "signing" || signingStatus === "Preparing"
-            }
+            disabled={signingStatus === "signing"}
             file={file}
           />
-          {/* Handling file preview  */}
           {file && <PdfPreview file={file} />}
           <StatusIndicator
             status={signingStatus}
@@ -93,8 +84,6 @@ function App() {
             error={error}
           />
           <SigningSteps currentStep={currentStep} />
-          <VerifySignature />
-          <DocumentHistory documents={documents} clearHistory={clearHistory} />
         </>
       )}
     </div>
@@ -102,3 +91,13 @@ function App() {
 }
 
 export default App;
+
+// export default function App() {
+//   console.log("App component rendering"); // Check browser console
+//   return (
+//     <div style={{ padding: "20px" }}>
+//       <h1 style={{ color: "red" }}>TEST UI</h1>
+//       <p>If you see this, React is working</p>
+//     </div>
+//   );
+// }

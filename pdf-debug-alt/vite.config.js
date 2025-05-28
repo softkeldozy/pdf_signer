@@ -3,6 +3,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  server: {
+    open: true, // Ensure browser opens
+  },
   optimizeDeps: {
     include: ["react", "react-dom", "viem/chains"],
   },
@@ -15,7 +18,7 @@ export default defineConfig({
 //   plugins: [react()],
 //   optimizeDeps: {
 //     include: ["react", "react-dom", "viem/chains"],
-//     ...Object.keys(customChains),
+//     // ...Object.keys(customChains),
 //   },
 //   resolve: {
 //     alias: {
