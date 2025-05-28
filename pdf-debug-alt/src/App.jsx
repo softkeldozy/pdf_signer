@@ -4,8 +4,7 @@ import WalletButton from "./components/WalletButton";
 import FileDropzone from "./components/FileDropzone";
 import SigningSteps from "./components/SigningSteps";
 import StatusIndicator from "./components/StatusIndicator";
-// import PdfPreview from "./components/PdfPreview";
-// import { usePdfSigner } from "./hooks/usePdfSigner";
+import PdfPreview from "./components/PdfPreview";
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import "../src/App.css";
 
@@ -13,27 +12,41 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
-  // const { signPdf, signingStatus, signatureData, error, reset } =
-  //   usePdfSigner();
   const { documents, addDocument, clearHistory } = useDocumentHistory();
+
+  const usePdfSigner = () => {
+    const [signer, setSigner] = useState(null);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+      import("./hooks/usePdfSigner")
+        .then((module) => setSigner(() => module.usePdfSigner))
+        .catch((err) => {
+          console.error("Failed to load signer:", err);
+          setError("Failed to load signing functionality");
+        });
+    }, []);
+
+    return error ? { error } : signer ? signer() : null;
+  };
 
   const handleConnect = (address) => {
     setIsConnected(true);
     setAddress(address);
-    reset();
+    // reset();
   };
 
   const handleDisconnect = () => {
     setIsConnected(false);
     setAddress("");
     setFile(null);
-    reset();
+    // reset();
   };
 
   const handleFileAccepted = async (file) => {
     if (!file) {
       setFile(null);
-      reset();
+      // reset();
       return;
     }
     setFile(file);
