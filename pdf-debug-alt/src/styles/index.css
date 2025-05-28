@@ -42,7 +42,7 @@ body {
 
 .btn-primary {
   background-color: var(--primary);
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .btn-primary:hover {
@@ -94,3 +94,38 @@ h2 {
 /* body {
   background-color: rgb(9, 255, 0) !important;
 } */
+#connect-wallt {
+  /* color: #eb640a;
+  font-size: x-large;
+  border-radius: var(--border-radius); */
+  /* Size */
+  padding: 10px 20px;
+  font-size: 16px;
+
+  /* Border */
+  border: 1px solid #010916;
+  border-radius: 12px; /* Adjust this value for more/less rounding */
+
+  /* Colors */
+  background-color: #f1f1f1;
+  color: #eb640a;
+
+  /* Effects */
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  /* Other styling */
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#connect-wallt:hover {
+  background-color: #632a04;
+  border-color: #f1f1f1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+#connect-wallt:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
