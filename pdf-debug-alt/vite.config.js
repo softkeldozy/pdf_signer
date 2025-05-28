@@ -8,6 +8,13 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ["react", "react-dom", "viem/chains"],
+    esbuildOptions: {
+      target: "es2020",
+    },
+  },
+  define: {
+    "process.env": {},
+    global: {},
   },
 });
 

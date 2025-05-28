@@ -698,7 +698,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethersproject/providers@npm:5.8.0":
+"@ethersproject/providers@npm:5.8.0, @ethersproject/providers@npm:^5.8.0":
   version: 5.8.0
   resolution: "@ethersproject/providers@npm:5.8.0"
   dependencies:
@@ -5167,13 +5167,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@ethersproject/providers": "npm:^5.8.0"
     "@ethsign/sp-sdk": "npm:^1.2.7"
     "@types/react": "npm:^18.2.56"
     "@types/react-dom": "npm:^18.2.19"
     "@vitejs/plugin-react": "npm:^4.5.0"
     "@wagmi/core": "npm:^2.17.2"
+    buffer: "npm:^6.0.3"
     ethers: "npm:^5.7.2"
     path: "npm:^0.12.7"
+    process: "npm:^0.11.10"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
     react-error-boundary: "npm:^6.0.0"
