@@ -1,11 +1,13 @@
 {
+  "type": "module",
   "dependencies": {
     "@ethsign/sp-sdk": "^1.2.7",
     "@wagmi/core": "^2.17.2",
     "ethers": "^5.7.2",
+    "path": "^0.12.7",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "viem": "^1.18.0",
+    "viem": "^2.30.1",
     "wagmi": "^2.15.4"
   },
   "scripts": {
@@ -15,6 +17,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.5.0",
     "vite": "^6.3.5"
   }

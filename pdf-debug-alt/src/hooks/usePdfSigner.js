@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Ethereum } from "@ethsign/sp-sdk";
 import { createWalletClient, custom } from "viem";
 import { mainnet } from "viem/chains";
+// import { mainnet } from "../lib/customChains.js";
 
 export const usePdfSigner = () => {
   const [signingStatus, setSigningStatus] = useState("idle");
