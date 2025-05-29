@@ -2,10 +2,8 @@ import { useState } from "react";
 import WalletButton from "./components/WalletButton";
 import FileDropzone from "./components/FileDropzone";
 import PdfPreview from "./components/PdfPreview";
-
 import SigningStatus from "./components/SigningStatus";
 import usePdfSigner from "./hooks/usePdfSigner2";
-
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import DocumentHistory from "./components/DocumentHistory";
 
@@ -21,6 +19,7 @@ export default function App() {
   const { signPdf, status, signatureData, error, reset } = usePdfSigner();
 
   const { documents, addDocument } = useDocumentHistory();
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
   // Safe connection handler
   const handleConnect = (addr) => {
@@ -64,14 +63,28 @@ export default function App() {
     }
   };
 
+  const handleSelectDocument = async (docId) => {
+    try {
+      const doc = documents.find((d) => d.id === docId);
+      if (doc) {
+        setSelectedDoc(doc);
+        // You might want to load the document content here if needed
+        // await loadDocument(docId);
+      }
+    } catch (err) {
+      console.error("Failed to load document:", err);
+    }
+  };
+
   return (
     <div
-      style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "20px",
-        fontFamily: "Arial, sans-serif",
-      }}
+      className="app-container"
+      // style={{
+      //   maxWidth: "800px",
+      //   margin: "0 auto",
+      //   padding: "20px",
+      //   fontFamily: "Arial, sans-serif",
+      // }}
     >
       <h1 style={{ color: "#333" }}>PDF Signing DApp</h1>
 
@@ -91,42 +104,41 @@ export default function App() {
           {file && <PdfPreview file={file} />}
           <SigningStatus status={status} file={file} />
           {signatureData && (
-            <div style={{ marginTop: "20px" }}>
+            <div className="signed-document-link">
               <a
                 href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "inline-block",
-                  padding: "10px 20px",
-                  background: "#4caf50",
-                  color: "white",
-                  borderRadius: "4px",
-                  textDecoration: "none",
-                }}
+                // style={{
+                //   display: "inline-block",
+                //   padding: "10px 20px",
+                //   background: "#4caf50",
+                //   color: "white",
+                //   borderRadius: "4px",
+                //   textDecoration: "none",
+                // }}
               >
                 View Signed Document
               </a>
             </div>
           )}
+
           <div className="sidebar">
-            <DocumentHistory documents={documents} />
-            {/* TODO try wrapping the VerifySignature here  */}
-            {/* <VerifySignature /> */}
+            <DocumentHistory
+              documents={documents}
+              onSelectDocument={handleSelectDocument}
+              selectedDocId={selectedDoc?.id}
+            />
           </div>
 
-          <ErrorBoundary>
-            <div
-              style={{
-                margin: "20px 0",
-                padding: "20px",
-                border: "1px solid #e2e8f0",
-                borderRadius: "8px",
-              }}
-            >
-              <VerifySignature2 />
-            </div>
-          </ErrorBoundary>
+          <div className="verification-section">
+            <ErrorBoundary>
+              <VerifySignature2
+                selectedDocument={selectedDoc}
+                address={address}
+              />
+            </ErrorBoundary>
+          </div>
         </div>
       )}
     </div>
