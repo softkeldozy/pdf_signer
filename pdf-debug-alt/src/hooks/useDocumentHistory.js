@@ -10,9 +10,14 @@ const useDocumentHistory = () => {
     );
     setDocuments(savedDocs);
   }, []);
-
   const addDocument = (doc) => {
-    const updatedDocs = [...documents, doc];
+    const updated = [
+      ...documents,
+      {
+        ...doc,
+        timestamp: new Date().toISOString(),
+      },
+    ];
     setDocuments(updatedDocs);
     localStorage.setItem("signedDocuments", JSON.stringify(updatedDocs));
   };

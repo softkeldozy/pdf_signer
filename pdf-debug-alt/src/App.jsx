@@ -114,7 +114,7 @@ export default function App() {
             {/* TODO try wrapping the VerifySignature here  */}
             {/* <VerifySignature /> */}
           </div>
-          // Wrapping the VerifySignature component......
+
           <ErrorBoundary>
             <div
               style={{
