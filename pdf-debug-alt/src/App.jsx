@@ -6,11 +6,19 @@ import PdfPreview from "./components/PdfPreview";
 import SigningStatus from "./components/SigningStatus";
 import usePdfSigner from "./hooks/usePdfSigner2";
 
+import useDocumentHistory from "./hooks/useDocumentHistory";
+import DocumentHistory from "./components/DocumentHistory";
+
+import VerifySignature1 from "./components/VerifySignature1";
+import "../src/App.css";
+
 export default function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
   const { signPdf, status, signatureData, error, reset } = usePdfSigner();
+
+  const { documents, addDocument } = useDocumentHistory();
 
   // Safe connection handler
   const handleConnect = (addr) => {
@@ -43,7 +51,12 @@ export default function App() {
 
     setFile(file);
     try {
-      await signPdf(file, address);
+      const result = await signPdf(file, address);
+      addDocument({
+        id: result.documentId,
+        name: file.name,
+        txHash: result.transactionHash,
+      });
     } catch (err) {
       console.error("Signing failed:", err);
     }
@@ -96,6 +109,10 @@ export default function App() {
               </a>
             </div>
           )}
+          <div className="sidebar">
+            <DocumentHistory documents={documents} />
+            <VerifySignature />
+          </div>
         </div>
       )}
     </div>

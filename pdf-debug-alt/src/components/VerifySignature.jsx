@@ -3,7 +3,8 @@ import { Ethereum } from "@ethsign/sp-sdk";
 
 const VerifySignature = () => {
   const [documentId, setDocumentId] = useState("");
-  const [verificationStatus, setVerificationStatus] = useState("idle");
+  // const[isLoading, setIsLoading]=useState(false)
+  const [verificationStatus, setVerificationStatus] = useState(false);
   const [verificationResult, setVerificationResult] = useState(null);
 
   const verifySignature = async () => {

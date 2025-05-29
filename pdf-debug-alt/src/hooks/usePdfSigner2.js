@@ -73,5 +73,15 @@ export default function usePdfSigner() {
     setError(null);
   };
 
+  // Add to usePdfSigner.js
+  const requestSignature = async (documentId, signerAddress) => {
+    const ethSign = new Ethereum();
+    return ethSign.signExistingDocument({
+      walletClient,
+      documentId,
+      signerAddress,
+    });
+  };
+
   return { signPdf, status, signatureData, error, reset };
 }

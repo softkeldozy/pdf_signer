@@ -1,35 +1,28 @@
-export default function SigningStatus({ status, file }) {
-  const statusMessages = {
-    idle: "Ready to sign",
-    preparing: "Preparing document...",
-    signing: "Approve transaction in your wallet",
-    success: "Document signed successfully!",
-    error: "Signing failed",
-  };
+// Enhanced SigningStatus.jsx
+export default function SigningStatus({ status, txHash, documentId }) {
+  const statusSteps = [
+    {
+      id: 1,
+      name: "Uploaded",
+      active: ["preparing", "signing", "success"].includes(status),
+    },
+    { id: 2, name: "Signing", active: ["signing", "success"].includes(status) },
+    { id: 3, name: "Completed", active: status === "success" },
+  ];
 
   return (
-    <div
-      style={{
-        padding: "15px",
-        background: "#f5f5f5",
-        borderRadius: "8px",
-        marginTop: "20px",
-      }}
-    >
-      <h3>Signing Status</h3>
-      <div
-        style={{
-          color: status === "error" ? "#d32f2f" : "#333",
-          fontWeight: "bold",
-          marginTop: "10px",
-        }}
-      >
-        {statusMessages[status] || statusMessages.idle}
-      </div>
-      {file && (
-        <p style={{ marginTop: "10px" }}>
-          File: {file.name} ({(file.size / 1024).toFixed(2)} KB)
-        </p>
+    <div className="status-tracker">
+      {statusSteps.map((step) => (
+        <div key={step.id} className={`step ${step.active ? "active" : ""}`}>
+          <div className="step-number">{step.id}</div>
+          <div className="step-name">{step.name}</div>
+        </div>
+      ))}
+
+      {txHash && (
+        <a href={`https://etherscan.io/tx/${txHash}`} target="_blank">
+          View Transaction
+        </a>
       )}
     </div>
   );
