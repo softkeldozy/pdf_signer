@@ -32,6 +32,10 @@ export const handleSigningError = (error) => {
   if (error.message.includes("gas")) {
     return "Transaction would exceed gas limit";
   }
+  // Handle specific EthSign errors
+  if (error.message?.includes("document not found")) {
+    return "Document not found. Check the Document ID.";
+  }
 
   console.error("Signing error:", error);
   return userMessage;

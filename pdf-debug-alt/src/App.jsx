@@ -9,7 +9,9 @@ import usePdfSigner from "./hooks/usePdfSigner2";
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import DocumentHistory from "./components/DocumentHistory";
 
-import VerifySignature1 from "./components/VerifySignature1";
+import ErrorBoundary from "./components/ErrorBoundary";
+
+import VerifySignature2 from "./components/VerifySignature2";
 import "../src/App.css";
 
 export default function App() {
@@ -87,9 +89,7 @@ export default function App() {
             disabled={!isConnected}
           />
           {file && <PdfPreview file={file} />}
-
           <SigningStatus status={status} file={file} />
-
           {signatureData && (
             <div style={{ marginTop: "20px" }}>
               <a
@@ -111,8 +111,22 @@ export default function App() {
           )}
           <div className="sidebar">
             <DocumentHistory documents={documents} />
-            <VerifySignature />
+            {/* TODO try wrapping the VerifySignature here  */}
+            {/* <VerifySignature /> */}
           </div>
+          // Wrapping the VerifySignature component......
+          <ErrorBoundary>
+            <div
+              style={{
+                margin: "20px 0",
+                padding: "20px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "8px",
+              }}
+            >
+              <VerifySignature2 />
+            </div>
+          </ErrorBoundary>
         </div>
       )}
     </div>
