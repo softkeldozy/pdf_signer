@@ -1,0 +1,14 @@
+.dropzone {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+}
+
+.dropzone input[type="file"] {
+  display: none;
+}
+
+.dropzone p {
+  margin-top: 10px;
+  color: #666;
+}

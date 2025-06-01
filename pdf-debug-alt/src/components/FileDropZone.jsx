@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+// import { useCallback, useState } from "react";
 
 // const FileDropzone = ({ onFileAccepted, disabled }) => {
 //   const [isDragging, setIsDragging] = useState(false);
@@ -121,40 +121,108 @@ import { useCallback, useState } from "react";
 
 // export default FileDropzone;
 
+// export default function FileDropzone({ onFileAccepted, disabled }) {
+//   const handleFileChange = (e) => {
+//     const file = e.target.files?.[0];
+//     if (file?.type === "application/pdf") {
+//       onFileAccepted(file);
+//     } else {
+//       alert("Please upload a valid PDF file");
+//     }
+//   };
+
+//   return (
+//     <div
+//       style={{
+//         padding: "20px",
+//         border: "2px dashed #ccc",
+//         borderRadius: "8px",
+//         textAlign: "center",
+//         opacity: disabled ? 0.6 : 1,
+//       }}
+//     >
+//       <input
+//         type="file"
+//         accept="application/pdf"
+//         onChange={handleFileChange}
+//         disabled={disabled}
+//         style={{ display: "none" }}
+//         id="pdf-upload"
+//       />
+//       <label htmlFor="pdf-upload" style={{ cursor: "pointer" }}>
+//         <p>Click to upload PDF or drag and drop</p>
+//         <p style={{ fontSize: "0.8em", color: "#666" }}>
+//           (Only PDF files accepted)
+//         </p>
+//       </label>
+//     </div>
+//   );
+// }
+import { useCallback } from "react";
+import "../styles/drop.css";
 export default function FileDropzone({ onFileAccepted, disabled }) {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-    if (file?.type === "application/pdf") {
-      onFileAccepted(file);
-    } else {
-      alert("Please upload a valid PDF file");
+    if (!file) return;
+
+    // File validation
+    if (!validateFile(file)) {
+      return; // Reject invalid files
     }
+
+    onFileAccepted(file);
   };
 
+  const validateFile = (file) => {
+    // Check basic file properties
+    if (!file || typeof file !== "object") {
+      console.error("Invalid file object", file);
+      alert("Please select a valid file");
+      return false;
+    }
+
+    // Check PDF file type
+    const isPDF =
+      file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf");
+    if (!isPDF) {
+      console.error("Invalid file type", {
+        type: file.type,
+        name: file.name,
+      });
+      alert("Only PDF files are supported");
+      return false;
+    }
+
+    // Check file size (example: 10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      console.error("File too large", file.size);
+      alert("File size must be less than 10MB");
+      return false;
+    }
+
+    return true; // All checks passed
+  };
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (validateFile(file)) {
+        onFileAccepted(file);
+      }
+    },
+    [onFileAccepted]
+  );
+
   return (
-    <div
-      style={{
-        padding: "20px",
-        border: "2px dashed #ccc",
-        borderRadius: "8px",
-        textAlign: "center",
-        opacity: disabled ? 0.6 : 1,
-      }}
-    >
+    <div className="dropzone">
       <input
         type="file"
-        accept="application/pdf"
+        accept=".pdf,application/pdf"
         onChange={handleFileChange}
         disabled={disabled}
-        style={{ display: "none" }}
-        id="pdf-upload"
       />
-      <label htmlFor="pdf-upload" style={{ cursor: "pointer" }}>
-        <p>Click to upload PDF or drag and drop</p>
-        <p style={{ fontSize: "0.8em", color: "#666" }}>
-          (Only PDF files accepted)
-        </p>
-      </label>
+      <p>Drag & drop a PDF file here, or click to select</p>
     </div>
   );
 }

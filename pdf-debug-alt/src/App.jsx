@@ -10,12 +10,18 @@ import DocumentHistory from "./components/DocumentHistory";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import VerifySignature2 from "./components/VerifySignature2";
+
+import SignatureToolbar from "./components/SignatureToolbar";
+import TransactionTimeline from "./components/TransactionTimeline";
+import SignatureOverlay from "./components/SignatureOverlay";
 import "../src/App.css";
 
 export default function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
+
+  const [step, setStep] = useState(0);
   const { signPdf, status, signatureData, error, reset } = usePdfSigner();
 
   const { documents, addDocument } = useDocumentHistory();
@@ -77,15 +83,7 @@ export default function App() {
   };
 
   return (
-    <div
-      className="app-container"
-      // style={{
-      //   maxWidth: "800px",
-      //   margin: "0 auto",
-      //   padding: "20px",
-      //   fontFamily: "Arial, sans-serif",
-      // }}
-    >
+    <div className="app-container">
       <h1 style={{ color: "#333" }}>PDF Signing DApp</h1>
 
       <WalletButton
@@ -109,14 +107,6 @@ export default function App() {
                 href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                // style={{
-                //   display: "inline-block",
-                //   padding: "10px 20px",
-                //   background: "#4caf50",
-                //   color: "white",
-                //   borderRadius: "4px",
-                //   textDecoration: "none",
-                // }}
               >
                 View Signed Document
               </a>
