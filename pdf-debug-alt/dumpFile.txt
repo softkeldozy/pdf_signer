@@ -1,0 +1,360 @@
+
+
+For fileDropZone
+ return (
+     <div className="dropzone">
+       <input
+         type="file"
+         accept=".pdf,application/pdf"
+        onChange={handleFileChange}
+         disabled={disabled}
+      />
+      <p>Drag & drop a PDF file here, or click to select</p>
+     </div>
+   );
+
+import { useCallback, useState } from "react";
+
+// const FileDropzone = ({ onFileAccepted, disabled }) => {
+//   const [isDragging, setIsDragging] = useState(false);
+
+//   const handleDrag = useCallback((e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     if (e.type === "dragenter" || e.type === "dragover") {
+//       setIsDragging(true);
+//     } else if (e.type === "dragleave") {
+//       setIsDragging(false);
+//     }
+//   }, []);
+
+//   const handleDrop = useCallback((e) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     setIsDragging(false);
+//     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+//       handleFile(e.dataTransfer.files[0]);
+//     }
+//   }, []);
+
+//   const handleChange = (e) => {
+//     if (e.target.files && e.target.files[0]) {
+//       handleFile(e.target.files[0]);
+//     }
+//   };
+
+//   const handleFile = (file) => {
+//     if (file.type === "application/pdf") {
+//       onFileAccepted(file);
+//     } else {
+//       alert("Please upload a PDF file");
+//     }
+//   };
+
+//   return (
+//     <div className="card">
+//       <h2>Upload Document</h2>
+//       {!file ? (
+//         <div
+//           className={`dropzone ${isDragging ? "dragging" : ""}`}
+//           onDragEnter={handleDrag}
+//           onDragLeave={handleDrag}
+//           onDragOver={handleDrag}
+//           onDrop={handleDrop}
+//           style={{
+//             border: "2px dashed",
+//             borderColor: isDragging ? "var(--primary)" : "var(--gray)",
+//             borderRadius: "var(--border-radius)",
+//             padding: "3rem",
+//             textAlign: "center",
+//             cursor: disabled ? "not-allowed" : "pointer",
+//             opacity: disabled ? 0.7 : 1,
+//           }}
+//         >
+//           <input
+//             type="file"
+//             id="file-upload"
+//             accept="application/pdf"
+//             style={{ display: "none" }}
+//             onChange={handleChange}
+//             disabled={disabled}
+//           />
+//           <label htmlFor="file-upload" style={{ cursor: "pointer" }}>
+//             <div className="flex-center gap-2" style={{ marginBottom: "1rem" }}>
+//               <svg
+//                 width="24"
+//                 height="24"
+//                 viewBox="0 0 24 24"
+//                 fill="none"
+//                 xmlns="http://www.w3.org/2000/svg"
+//               >
+//                 <path
+//                   d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M17 8L12 3L7 8"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//                 <path
+//                   d="M12 3V15"
+//                   stroke="currentColor"
+//                   strokeWidth="2"
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                 />
+//               </svg>
+//               <span>Drag & drop your PDF here or click to browse</span>
+//             </div>
+//             <p style={{ color: "var(--gray)", fontSize: "0.9rem" }}>
+//               Only PDF files are accepted
+//             </p>
+//           </label>
+//         </div>
+//       ) : (
+//         <div style={{ textAlign: "center" }}>
+//           <p style={{ marginBottom: "1rem" }}>
+//             <strong>Selected file:</strong> {file.name}
+//           </p>
+//           <button
+//             className="btn btn-outline"
+//             onClick={() => onFileAccepted(null)}
+//           >
+//             Change File
+//           </button>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default FileDropzone;
+
+import { useCallback } from "react";
+import "../styles/drop.css";
+export default function FileDropzone({ onFileAccepted, disabled }) {
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // File validation
+    if (!validateFile(file)) {
+      return; // Reject invalid files
+    }
+
+    onFileAccepted(file);
+  };
+
+  const validateFile = (file) => {
+    // Check basic file properties
+    if (!file || typeof file !== "object") {
+      console.error("Invalid file object", file);
+      alert("Please select a valid file");
+      return false;
+    }
+
+    // Check PDF file type
+    const isPDF =
+      file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf");
+    if (!isPDF) {
+      console.error("Invalid file type", {
+        type: file.type,
+        name: file.name,
+      });
+      alert("Only PDF files are supported");
+      return false;
+    }
+
+    // Check file size (example: 10MB limit)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      console.error("File too large", file.size);
+      alert("File size must be less than 10MB");
+      return false;
+    }
+
+    return true; // All checks passed
+  };
+
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+      if (validateFile(file)) {
+        onFileAccepted(file);
+      }
+    },
+    [onFileAccepted]
+  );
+
+  return (
+    <div className="dropzone">
+      <input
+        type="file"
+        accept=".pdf,application/pdf"
+        onChange={handleFileChange}
+        disabled={disabled}
+      />
+      <p>Drag & drop a PDF file here, or click to select</p>
+    </div>
+  );
+}
+
+
+usePdfSigner2.js files
+
+// Clean up on unmount
+  useEffect(() => {
+    return () => {
+      if (state.documentPreview) {
+        URL.revokeObjectURL(state.documentPreview);
+      }
+      if (window.__lastPdfSignClick) {
+        delete window.__lastPdfSignClick;
+      }
+    };
+  }, [state.documentPreview]);
+
+  return {
+    ...state,
+    prepareDocument,
+    signPdf,
+    reset,
+    setReady: (isReady) => setState((prev) => ({ ...prev, isReady })),
+  };
+
+
+      console.error("SDK initialization error:", error);
+      setState((prev) => ({
+        ...prev,
+        error: {
+          message: `SDK initialization failed: ${error.message}`,
+          details: error.stack,
+        },
+      }));
+      throw error;
+
+
+      // Initialize SDK
+  // const initializeSDK = useCallback(async () => {
+  //   let SDK;
+  //   let ethSignInstance;
+
+  //   try {
+  //     setState((prev) => ({ ...prev, isInitializing: true }));
+
+  //     // Attempt 1: Standard ESM import
+  //     try {
+  //       SDK = await import("@ethsign/sp-sdk");
+  //       console.log("📦 Imported SDK module:", SDK);
+  //       console.log("🔍 SDK.default:", SDK.default);
+  //       console.log("SDK structure:", SDK); // Debug log
+  //     } catch (esmError) {
+  //       console.error("Standard import failed:", esmError);
+  //       throw new Error("Failed to import @ethsign/sp-sdk");
+  //     }
+
+  //     // Check for all possible export patterns
+  //     if (typeof SDK?.signDocument === "function") {
+  //       ethSignInstance = SDK; // Direct exports
+  //     } else if (typeof SDK?.default?.signDocument === "function") {
+  //       ethSignInstance = SDK.default; // Default export
+  //     } else if (typeof SDK?.EthSign === "function") {
+  //       ethSignInstance = new SDK.EthSign(); // Named constructor
+  //     } else if (typeof SDK?.default?.EthSign === "function") {
+  //       ethSignInstance = new SDK.default.EthSign(); // Nested constructor
+  //     } else if (typeof SDK?.default?.default?.signDocument === "function") {
+  //       ethSignInstance = SDK.default.default; // Deep default export
+  //     } else {
+  //       // Last resort - check for any valid signDocument function
+  //       const potentialInstance = SDK.default || SDK;
+  //       if (typeof potentialInstance?.signDocument === "function") {
+  //         ethSignInstance = potentialInstance;
+  //       } else {
+  //         throw new Error("No valid signDocument function found in SDK");
+  //       }
+  //     }
+
+  //     if (!ethSignInstance) {
+  //       throw new Error("Could not initialize EthSign SDK");
+  //     }
+
+  //     // Verify the instance has required methods
+  //     if (typeof ethSignInstance.signDocument !== "function") {
+  //       throw new Error("SDK instance missing signDocument method");
+  //     }
+
+  //     return ethSignInstance;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", {
+  //       error,
+  //       // SDKVersion: SDK?.version,
+  //       SDKVersion:
+  //         SDK && typeof SDK.version !== "undefined" ? SDK.version : "unknown",
+  //     });
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   } finally {
+  //     setState((prev) => ({ ...prev, isInitializing: false }));
+  //   }
+  // }, []);
+
+  // Sign PDF
+  // const signPdf = useCallback(
+  //   async (file, address, metadata = {}) => {
+  //     try {
+  //       setState((prev) => ({ ...prev, status: "signing" }));
+
+  //       const ethSign = await initializeSDK();
+  //       const arrayBuffer = await file.arrayBuffer();
+  //       const uint8Array = new Uint8Array(arrayBuffer);
+
+  //       const { createWalletClient, custom } = await import("viem");
+  //       const { sepolia } = await import("viem/chains");
+
+  //       const walletClient = createWalletClient({
+  //         chain: sepolia,
+  //         transport: custom(window.ethereum),
+  //         account: address,
+  //       });
+
+  //       const response = await ethSign.signDocument({
+  //         walletClient,
+  //         data: uint8Array,
+  //         name: file.name,
+  //         signaturePayload: {
+  //           name: "PDF Signer DApp",
+  //           version: "1.0",
+  //           metadata: {
+  //             ...metadata,
+  //             timestamp: new Date().toISOString(),
+  //             signer: address,
+  //           },
+  //         },
+  //       });
+
+  //       setState((prev) => ({
+  //         ...prev,
+  //         status: "success",
+  //         signatureData: response,
+  //       }));
+
+  //       return response;
+  //     } catch (error) {
+  //       setState((prev) => ({
+  //         ...prev,
+  //         status: "error",
+  //         error: {
+  //           message: error.message,
+  //           details: error.stack,
+  //         },
+  //       }));
+  //       throw error;
+  //     }
+  //   },
+  //   [initializeSDK]
+  // );

@@ -1,865 +1,3 @@
-// import { useState, useRef } from "react";
-// import WalletButton from "./components/WalletButton";
-// import FileDropzone from "./components/FileDropzone";
-// import PdfPreview from "./components/PdfPreview";
-// import SigningStatus from "./components/SigningStatus";
-// import usePdfSigner from "./hooks/usePdfSigner2";
-// import useDocumentHistory from "./hooks/useDocumentHistory";
-// import DocumentHistory from "./components/DocumentHistory";
-// import ErrorBoundary from "./components/ErrorBoundary";
-// import VerifySignature2 from "./components/VerifySignature2";
-// import SignatureToolbar from "./components/SignatureToolbar";
-// import TransactionTimeline from "./components/TransactionTimeline";
-// import SignatureOverlay from "./components/SignatureOverlay";
-// const { signPdf, captureSignature } = usePdfSigner();
-// const [positions, setPositions] = useState([]);
-// import "../src/App.css";
-
-// export default function App() {
-//   // Existing state
-//   const [isConnected, setIsConnected] = useState(false);
-//   const [address, setAddress] = useState("");
-//   const [file, setFile] = useState(null);
-//   const { signPdf, status, signatureData, error, reset } = usePdfSigner();
-//   const { documents, addDocument } = useDocumentHistory();
-//   const [selectedDoc, setSelectedDoc] = useState(null);
-
-//   // New signature state
-//   const [signingStep, setSigningStep] = useState(0);
-//   const [signatureColor, setSignatureColor] = useState("#000000");
-//   const pdfContainerRef = useRef(null);
-
-//   const [pdfReady, setPdfReady] = useState(false); // Add this with your other state declarations
-//   const [showSignButton, setShowSignButton] = useState(false);
-
-//   // Existing handlers (unchanged)
-//   const handleConnect = (addr) => {
-//     try {
-//       if (!addr) throw new Error("Invalid address received");
-//       setIsConnected(true);
-//       setAddress(addr);
-//       reset();
-//     } catch (err) {
-//       console.error("Connection handler error:", err);
-//       setIsConnected(false);
-//       setAddress("");
-//     }
-//   };
-
-//   const handleDisconnect = () => {
-//     setIsConnected(false);
-//     setAddress("");
-//     setFile(null);
-//     reset();
-//     setSigningStep(0); // Reset signing flow
-//   };
-
-//   // Modified file handler
-//   const handleFileAccepted = async (file) => {
-//     if (!file) {
-//       //   setFile(null);
-//       //   reset();
-//       //   return;
-//       // }
-
-//       // setFile(file);
-//       // setSigningStep(1); // Ready for signing
-//       setPdfReady(false);
-//       setShowSignButton(false);
-//       setFile(file);
-
-//       try {
-//         // Store the result to use its properties
-//         const result = await signPdf(file, address);
-//         addDocument({
-//           id: result.documentId,
-//           name: file.name,
-//           txHash: result.transactionHash,
-//           signatureImage: result.signatureImage,
-//           positions: result.positions,
-//         });
-//         // Only progress to signing if no automatic signing happens
-//         if (!result.signature) {
-//           setSigningStep(1);
-//         }
-//       } catch (err) {
-//         console.error("Signing failed:", err);
-//         setSigningStep(1); // Reset on error
-//       }
-//     }
-
-//     // effect to handle button visibility
-//     useEffect(() => {
-//       if (pdfReady && file && !showSignButton) {
-//         setShowSignButton(true);
-//       }
-//     }, [pdfReady, file, showSignButton]);
-
-//     // New signature handler
-//     // const handleFinalizeSignature = async () => {
-//     //   try {
-//     //     setSigningStep(2); // Signing in progress
-
-//     //     // Your existing signing logic happens here automatically
-//     //     // via usePdfSigner hook when file is set
-
-//     //     // When signatureData appears, we progress to step 3
-//     //   } catch (err) {
-//     //     console.error("Signature finalization failed:", err);
-//     //     setSigningStep(1); // Return to signing ready state
-//     //   }
-//     // };
-//     const handleDrawingComplete = (newPositions) => {
-//       setPositions(newPositions);
-//     };
-//     const handleFinalizeSignature = async () => {
-//       try {
-//         setSigningStep(2); // Signing in progress
-//         setStatus("signing");
-
-//         // 1. Capture the canvas signature as image
-//         const canvas = document.getElementById("signature-canvas");
-//         const signatureImage = canvas.toDataURL("image/png");
-
-//         // 2. Capture signature data
-//         captureSignature(positions, signatureImage);
-
-//         // 4. Prepare metadata
-//         const signingTimestamp = new Date().toISOString();
-//         const pdfHash = await hashPdf(file); // Implement this helper function
-
-//         // 5. Call smart contract
-//         const tx = await signPdf(file, address, {
-//           signatureImage,
-//           signingTimestamp,
-//           pdfHash,
-//           signatureType: "handwritten",
-//           signatureVersion: "1.0",
-//           documentHash: await hashPdf(file),
-//         });
-
-//         // 6. Wait for blockchain confirmation
-//         await tx.wait();
-
-//         // 7. Update document history
-//         addDocument({
-//           id: tx.hash, // Using tx hash as temporary ID
-//           name: file.name,
-//           txHash: tx.hash,
-//           signatureImage,
-//           timestamp: signingTimestamp,
-//         });
-
-//         const handleSign = async () => {
-//           const canvas = document.getElementById("signature-canvas");
-//           const imageData = canvas.toDataURL("image/png");
-
-//           // Capture drawn positions (from your mouse events)
-//           captureSignature(positions, imageData);
-
-//           // Sign with metadata
-//           await signPdf(file, address, {
-//             customField: "value",
-//             // ...other metadata
-//           });
-//         };
-
-//         // Progress will automatically advance to step 3 via useEffect
-//         // when signatureData is populated by usePdfSigner hook
-//       } catch (err) {
-//         console.error("Signature finalization failed:", err);
-//         setStatus("error");
-//         setSigningStep(1); // Return to signing ready state
-//       }
-//     };
-
-//     // Effect to auto-advance when signature is complete
-//     useEffect(() => {
-//       if (signatureData && signingStep === 2) {
-//         setSigningStep(3); // Signature complete
-//       }
-//     }, [signatureData, signingStep]);
-
-//     return (
-//       <div className="app-container">
-//         <h1>PDF Signing DApp</h1>
-
-//         <WalletButton
-//           isConnected={isConnected}
-//           address={address}
-//           onConnect={handleConnect}
-//           onDisconnect={handleDisconnect}
-//         />
-
-//         {isConnected && (
-//           <div className="main-content">
-//             {/* File Dropzone (unchanged) */}
-//             <FileDropzone
-//               onFileAccepted={handleFileAccepted}
-//               disabled={!isConnected}
-//             />
-
-//             {/* PDF Preview with Signature Overlay */}
-//             {file && (
-//               <div className="pdf-preview-container" ref={pdfContainerRef}>
-//                 <PdfPreview
-//                   file={file}
-//                   onLoadSuccess={() => {
-//                     setPdfReady(true);
-//                     setStatus("ready-to-sign");
-//                   }}
-//                   onLoadError={() => {
-//                     setPdfReady(false);
-//                     console.error("PDF loading failed:", err);
-//                     setStatus("load-error");
-//                   }}
-//                 />
-//                 {showSignButton && signingStep === 0 && (
-//                   <div className="sign-action-button">
-//                     <button
-//                       onClick={() => setSigningStep(1)}
-//                       className="primary-button"
-//                     >
-//                       {status === "signing" ? (
-//                         <span className="flex items-center">
-//                           <Spinner size="small" /> Processing...
-//                         </span>
-//                       ) : (
-//                         "Start Signing Process"
-//                       )}
-//                     </button>
-//                   </div>
-//                 )}
-
-//                 {signingStep >= 1 && (
-//                   <SignatureOverlay
-//                     color={signatureColor}
-//                     onDrawingComplete={handleDrawingComplete}
-//                   />
-//                 )}
-//                 {/* {signingStep >= 1 && (
-//                 <SignatureOverlay
-//                   color={signatureColor}
-//                   enabled={signingStep === 1}
-//                 />
-//               )} */}
-//               </div>
-//             )}
-
-//             {/* Signature Controls */}
-//             {file && signingStep >= 1 && (
-//               <div className="signature-controls">
-//                 <ErrorBoundary>
-//                   <SignatureToolbar
-//                     onSign={handleFinalizeSignature}
-//                     onClear={() => setSigningStep(1)}
-//                     onColorChange={setSignatureColor}
-//                     disabled={signingStep !== 1}
-//                   />
-//                 </ErrorBoundary>
-
-//                 <TransactionTimeline
-//                   currentStep={signingStep}
-//                   steps={[
-//                     "PDF Uploaded",
-//                     "Add Signature",
-//                     "Processing",
-//                     "Completed",
-//                   ]}
-//                 />
-//               </div>
-//             )}
-//             <SignatureOverlay
-//               onDrawingComplete={handleDrawingComplete}
-//               color={signatureColor}
-//               enabled={signingStep === 1}
-//             />
-
-//             {/* Existing components (unchanged) */}
-//             <SigningStatus status={status} file={file} />
-
-//             {signatureData && (
-//               <div className="signed-document-link">
-//                 <a
-//                   href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                 >
-//                   View Signed Document
-//                 </a>
-//               </div>
-//             )}
-
-//             <div className="sidebar">
-//               <DocumentHistory
-//                 documents={documents}
-//                 onSelectDocument={handleSelectDocument}
-//                 selectedDocId={selectedDoc?.id}
-//               />
-//             </div>
-
-//             <div className="verification-section">
-//               <ErrorBoundary>
-//                 <VerifySignature2
-//                   selectedDocument={selectedDoc}
-//                   address={address}
-//                 />
-//               </ErrorBoundary>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     );
-//   };
-// }
-
-// good working minus action button
-
-// import { useState, useRef, useEffect } from "react";
-// import WalletButton from "./components/WalletButton";
-// import FileDropzone from "./components/FileDropzone";
-// import PdfPreview from "./components/PdfPreview";
-// import SigningStatus from "./components/SigningStatus";
-// import usePdfSigner from "./hooks/usePdfSigner2";
-// import useDocumentHistory from "./hooks/useDocumentHistory";
-// import DocumentHistory from "./components/DocumentHistory";
-// import ErrorBoundary from "./components/ErrorBoundary";
-// import VerifySignature2 from "./components/VerifySignature2";
-// import SignatureToolbar from "./components/SignatureToolbar";
-// import TransactionTimeline from "./components/TransactionTimeline";
-// import SignatureOverlay from "./components/SignatureOverlay";
-// const [showActionButton, setShowActionButton] = useState(false);
-// import "../src/App.css";
-
-// export default function App() {
-//   // State declarations
-//   const [isConnected, setIsConnected] = useState(false);
-//   const [address, setAddress] = useState("");
-//   const [file, setFile] = useState(null);
-//   const [signingStep, setSigningStep] = useState(0);
-//   const [signatureColor, setSignatureColor] = useState("#000000");
-//   const [positions, setPositions] = useState([]);
-//   const [pdfReady, setPdfReady] = useState(false);
-//   const [showSignButton, setShowSignButton] = useState(false);
-//   const [selectedDoc, setSelectedDoc] = useState(null);
-
-//   const pdfContainerRef = useRef(null);
-//   const { signPdf, status, signatureData, error, reset, captureSignature } =
-//     usePdfSigner();
-//   const { documents, addDocument } = useDocumentHistory();
-
-//   // Handlers
-//   const handleConnect = (addr) => {
-//     try {
-//       if (!addr) throw new Error("Invalid address received");
-//       setIsConnected(true);
-//       setAddress(addr);
-//       reset();
-//     } catch (err) {
-//       console.error("Connection handler error:", err);
-//       setIsConnected(false);
-//       setAddress("");
-//     }
-//   };
-
-//   const handleDisconnect = () => {
-//     setIsConnected(false);
-//     setAddress("");
-//     setFile(null);
-//     reset();
-//     setSigningStep(0);
-//   };
-
-//   const handleFileAccepted = async (file) => {
-//     setShowActionButton(false);
-//     setFile(file);
-//     if (!file) {
-//       setFile(null);
-//       reset();
-//       return;
-//     }
-
-//     setPdfReady(false);
-//     setShowSignButton(false);
-//     setFile(file);
-
-//     try {
-//       const result = await signPdf(file, address);
-//       addDocument({
-//         id: result.documentId,
-//         name: file.name,
-//         txHash: result.transactionHash,
-//         ...(result.signatureImage && {
-//           signatureImage: result.signatureImage,
-//           positions: result.positions,
-//         }),
-//       });
-
-//       if (!result.signature) {
-//         setSigningStep(1);
-//       }
-//     } catch (err) {
-//       console.error("Signing failed:", err);
-//       setSigningStep(0);
-//     }
-//   };
-
-//   const handleDrawingComplete = (newPositions) => {
-//     setPositions(newPositions);
-//   };
-
-//   const handleFinalizeSignature = async () => {
-//     try {
-//       setSigningStep(2);
-//       setStatus("signing");
-
-//       const canvas = document.getElementById("signature-canvas");
-//       const signatureImage = canvas.toDataURL("image/png");
-//       const signingTimestamp = new Date().toISOString();
-
-//       captureSignature(positions, signatureImage);
-
-//       const result = await signPdf(file, address, {
-//         signatureImage,
-//         signingTimestamp,
-//         signatureType: "handwritten",
-//         signatureVersion: "1.0",
-//         positions,
-//       });
-
-//       addDocument({
-//         id: result.documentId,
-//         name: file.name,
-//         txHash: result.transactionHash,
-//         signatureImage,
-//         timestamp: signingTimestamp,
-//         positions,
-//       });
-
-//       setStatus("signed");
-//     } catch (err) {
-//       console.error("Signature finalization failed:", err);
-//       setStatus("error");
-//       setSigningStep(1);
-//     }
-//   };
-
-//   const handleSelectDocument = async (docId) => {
-//     try {
-//       const doc = documents.find((d) => d.id === docId);
-//       if (doc) {
-//         setSelectedDoc(doc);
-//       }
-//     } catch (err) {
-//       console.error("Failed to load document:", err);
-//     }
-//   };
-//   // Temporary debug component - can remove after confirmation
-//   const PdfLoadDebug = () => {
-//     useEffect(() => {
-//       console.log("PDF Load States:", {
-//         fileExists: !!file,
-//         showButton: showActionButton,
-//         signingStep,
-//       });
-//     }, [file, showActionButton, signingStep]);
-
-//     return null;
-//   };
-
-//   // Effects
-//   useEffect(() => {
-//     if (pdfReady && file && !showSignButton) {
-//       setShowSignButton(true);
-//     }
-//   }, [pdfReady, file, showSignButton]);
-
-//   useEffect(() => {
-//     if (signatureData && signingStep === 2) {
-//       setSigningStep(3);
-//     }
-//   }, [signatureData, signingStep]);
-
-//   useEffect(() => {
-//     if (file && !showActionButton) {
-//       const timer = setTimeout(() => {
-//         setShowActionButton(true);
-//       }, 500); // Small delay to ensure everything is ready
-//       return () => clearTimeout(timer);
-//     }
-//   }, [file, showActionButton]);
-
-//   return (
-//     <div className="app-container">
-//       <h1>PDF Signing DApp</h1>
-
-//       <WalletButton
-//         isConnected={isConnected}
-//         address={address}
-//         onConnect={handleConnect}
-//         onDisconnect={handleDisconnect}
-//       />
-
-//       {isConnected && (
-//         <div className="main-content">
-//           <FileDropzone
-//             onFileAccepted={handleFileAccepted}
-//             disabled={!isConnected}
-//           />
-
-//           {file && (
-//             <div className="pdf-preview-container" ref={pdfContainerRef}>
-//               <PdfPreview
-//                 file={file}
-//                 onLoadSuccess={() => {
-//                   setShowActionButton(true);
-//                   setStatus("ready-to-sign");
-//                 }}
-//                 onLoadError={() => {
-//                   setStatus("load-error");
-//                 }}
-//               />
-//               {showActionButton && (
-//                 <div
-//                   style={{
-//                     textAlign: "center",
-//                     marginTop: "20px",
-//                     paddingTop: "20px",
-//                     borderTop: "1px solid #e2e8f0",
-//                   }}
-//                 >
-//                   <button
-//                     onClick={() => setSigningStep(1)}
-//                     style={{
-//                       padding: "10px 24px",
-//                       backgroundColor: "#3b82f6",
-//                       color: "white",
-//                       border: "none",
-//                       borderRadius: "6px",
-//                       fontSize: "16px",
-//                       cursor: "pointer",
-//                     }}
-//                   >
-//                     Start Signing
-//                   </button>
-//                 </div>
-//               )}
-//               <PdfLoadDebug />
-//               {/* {showSignButton && signingStep === 0 && (
-//                 <div className="sign-action-button">
-//                   <button
-//                     onClick={() => setSigningStep(1)}
-//                     className="primary-button"
-//                   >
-//                     Start Signing Process
-//                   </button>
-//                 </div>
-//               )} */}
-
-//               {signingStep >= 1 && (
-//                 <SignatureOverlay
-//                   color={signatureColor}
-//                   onDrawingComplete={handleDrawingComplete}
-//                 />
-//               )}
-//             </div>
-//           )}
-
-//           {file && signingStep >= 1 && (
-//             <div className="signature-controls">
-//               <ErrorBoundary>
-//                 <SignatureToolbar
-//                   onSign={handleFinalizeSignature}
-//                   onClear={() => setSigningStep(1)}
-//                   onColorChange={setSignatureColor}
-//                   disabled={signingStep !== 1}
-//                 />
-//               </ErrorBoundary>
-
-//               <TransactionTimeline
-//                 currentStep={signingStep}
-//                 steps={[
-//                   "PDF Uploaded",
-//                   "Add Signature",
-//                   "Processing",
-//                   "Completed",
-//                 ]}
-//               />
-//             </div>
-//           )}
-
-//           <SigningStatus status={status} file={file} />
-
-//           {signatureData && (
-//             <div className="signed-document-link">
-//               <a
-//                 href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
-//                 target="_blank"
-//                 rel="noopener noreferrer"
-//               >
-//                 View Signed Document
-//               </a>
-//             </div>
-//           )}
-
-//           <div className="sidebar">
-//             <DocumentHistory
-//               documents={documents}
-//               onSelectDocument={handleSelectDocument}
-//               selectedDocId={selectedDoc?.id}
-//             />
-//           </div>
-
-//           <div className="verification-section">
-//             <ErrorBoundary>
-//               <VerifySignature2
-//                 selectedDocument={selectedDoc}
-//                 address={address}
-//               />
-//             </ErrorBoundary>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// working too
-// import { useState, useRef, useEffect } from "react";
-// import WalletButton from "./components/WalletButton";
-// import FileDropzone from "./components/FileDropzone";
-// import PdfPreview from "./components/PdfPreview";
-// import SigningStatus from "./components/SigningStatus";
-// import usePdfSigner from "./hooks/usePdfSigner2";
-// import useDocumentHistory from "./hooks/useDocumentHistory";
-// import DocumentHistory from "./components/DocumentHistory";
-// import ErrorBoundary from "./components/ErrorBoundary";
-// import VerifySignature2 from "./components/VerifySignature2";
-// import SignatureToolbar from "./components/SignatureToolbar";
-// import TransactionTimeline from "./components/TransactionTimeline";
-// import SignatureOverlay from "./components/SignatureOverlay";
-// import "../src/App.css";
-
-// export default function App() {
-//   // State declarations
-//   const [isConnected, setIsConnected] = useState(false);
-//   const [address, setAddress] = useState("");
-//   const [file, setFile] = useState(null);
-//   const [signingStep, setSigningStep] = useState(0);
-//   const [signatureColor, setSignatureColor] = useState("#000000");
-//   const [positions, setPositions] = useState([]);
-//   const [showActionButton, setShowActionButton] = useState(false);
-//   const [selectedDoc, setSelectedDoc] = useState(null);
-
-//   const pdfContainerRef = useRef(null);
-//   const { signPdf, status, signatureData, error, reset, captureSignature } =
-//     usePdfSigner();
-//   const { documents, addDocument } = useDocumentHistory();
-
-//   // Handlers
-//   const handleConnect = (addr) => {
-//     try {
-//       if (!addr) throw new Error("Invalid address received");
-//       setIsConnected(true);
-//       setAddress(addr);
-//       reset();
-//     } catch (err) {
-//       console.error("Connection handler error:", err);
-//       setIsConnected(false);
-//       setAddress("");
-//     }
-//   };
-
-//   const handleDisconnect = () => {
-//     setIsConnected(false);
-//     setAddress("");
-//     setFile(null);
-//     reset();
-//     setSigningStep(0);
-//     setShowActionButton(false);
-//   };
-
-//   const handleFileAccepted = (file) => {
-//     setFile(file);
-//     setShowActionButton(false);
-//     setSigningStep(0);
-//     reset();
-//   };
-
-//   const handleStartSigning = () => {
-//     setSigningStep(1);
-//     // setShowActionButton(false);
-//   };
-
-//   const handleDrawingComplete = (newPositions) => {
-//     setPositions(newPositions);
-//   };
-
-//   const handleFinalizeSignature = async () => {
-//     try {
-//       setSigningStep(2);
-//       setStatus("signing");
-
-//       const canvas = document.getElementById("signature-canvas");
-//       const signatureImage = canvas.toDataURL("image/png");
-//       const signingTimestamp = new Date().toISOString();
-
-//       captureSignature(positions, signatureImage);
-
-//       const result = await signPdf(file, address, {
-//         signatureImage,
-//         signingTimestamp,
-//         signatureType: "handwritten",
-//         signatureVersion: "1.0",
-//         positions,
-//       });
-
-//       addDocument({
-//         id: result.documentId,
-//         name: file.name,
-//         txHash: result.transactionHash,
-//         signatureImage,
-//         timestamp: signingTimestamp,
-//         positions,
-//       });
-
-//       setStatus("signed");
-//       setSigningStep(3);
-//     } catch (err) {
-//       console.error("Signature finalization failed:", err);
-//       setStatus("error");
-//       setSigningStep(1);
-//     }
-//   };
-
-//   const handleSelectDocument = async (docId) => {
-//     try {
-//       const doc = documents.find((d) => d.id === docId);
-//       if (doc) {
-//         setSelectedDoc(doc);
-//       }
-//     } catch (err) {
-//       console.error("Failed to load document:", err);
-//     }
-//   };
-
-//   // Effects
-//   useEffect(() => {
-//     return () => {
-//       // Cleanup when component unmounts
-//       if (file) {
-//         URL.revokeObjectURL(file);
-//       }
-//     };
-//   }, [file]);
-
-//   return (
-//     <div className="app-container">
-//       <h1>PDF Signing DApp</h1>
-
-//       <WalletButton
-//         isConnected={isConnected}
-//         address={address}
-//         onConnect={handleConnect}
-//         onDisconnect={handleDisconnect}
-//       />
-
-//       {isConnected && (
-//         <div className="main-content">
-//           <FileDropzone
-//             onFileAccepted={handleFileAccepted}
-//             disabled={!isConnected}
-//           />
-
-//           {file && (
-//             <div className="pdf-preview-container" ref={pdfContainerRef}>
-//               <PdfPreview
-//                 file={file}
-//                 onLoadSuccess={() => {
-//                   setShowActionButton(true);
-//                   setStatus("ready-to-sign");
-//                 }}
-//                 onLoadError={() => {
-//                   setStatus("load-error");
-//                   setShowActionButton(false);
-//                 }}
-//               />
-//               <SigningStatus
-//                 status={status}
-//                 txHash={signatureData?.transactionHash}
-//                 onSignClick={handleStartSigning} // Your existing signing handler
-//                 isReadyToSign={status === "ready-to-sign" && signingStep === 0}
-//               />
-
-//               {signingStep >= 1 && (
-//                 <SignatureOverlay
-//                   color={signatureColor}
-//                   onDrawingComplete={handleDrawingComplete}
-//                 />
-//               )}
-//             </div>
-//           )}
-
-//           {file && signingStep >= 1 && (
-//             <div className="signature-controls">
-//               <ErrorBoundary>
-//                 <SignatureToolbar
-//                   onSign={handleFinalizeSignature}
-//                   onClear={() => setSigningStep(1)}
-//                   onColorChange={setSignatureColor}
-//                   disabled={signingStep !== 1}
-//                 />
-//               </ErrorBoundary>
-
-//               <TransactionTimeline
-//                 currentStep={signingStep}
-//                 steps={[
-//                   "PDF Uploaded",
-//                   "Add Signature",
-//                   "Processing",
-//                   "Completed",
-//                 ]}
-//               />
-//             </div>
-//           )}
-
-//           {/* <SigningStatus status={status} file={file} /> */}
-
-//           {signatureData && (
-//             <div className="signed-document-link">
-//               <a
-//                 href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
-//                 target="_blank"
-//                 rel="noopener noreferrer"
-//               >
-//                 View Signed Document
-//               </a>
-//             </div>
-//           )}
-
-//           <div className="sidebar">
-//             <DocumentHistory
-//               documents={documents}
-//               onSelectDocument={handleSelectDocument}
-//               selectedDocId={selectedDoc?.id}
-//             />
-//           </div>
-
-//           <div className="verification-section">
-//             <ErrorBoundary>
-//               <VerifySignature2
-//                 selectedDocument={selectedDoc}
-//                 address={address}
-//               />
-//             </ErrorBoundary>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// working
 // import { useState, useRef, useEffect } from "react";
 // import WalletButton from "./components/WalletButton";
 // import FileDropzone from "./components/FileDropzone";
@@ -868,126 +6,227 @@
 // import usePdfSigner2 from "./hooks/usePdfSigner2";
 // import useDocumentHistory from "./hooks/useDocumentHistory";
 // import DocumentHistory from "./components/DocumentHistory";
+// import TransactionTimeline from "./components/TransactionTimeline";
 // import ErrorBoundary from "./components/ErrorBoundary";
 // import VerifySignature2 from "./components/VerifySignature2";
-// import TransactionTimeline from "./components/TransactionTimeline";
-// import useApproveSign from "./hooks/useApproveSign";
-// import "../src/App.css";
+// import "./App.css";
 
 // export default function App() {
-//   // State declarations
+//   // State
 //   const [isConnected, setIsConnected] = useState(false);
 //   const [address, setAddress] = useState("");
 //   const [file, setFile] = useState(null);
 //   const [selectedDoc, setSelectedDoc] = useState(null);
-//   const [isReadyToSign, setIsReadyToSign] = useState(false);
+//   const [signingState, setSigningState] = useState({
+//     isReady: false,
+//     isSigning: false,
+//     error: null,
+//   });
+
+//   const getCurrentWalletAddress = async () => {
+//     if (window.ethereum) {
+//       try {
+//         const accounts = await window.ethereum.request({
+//           method: "eth_accounts",
+//         });
+//         return accounts[0] || null;
+//       } catch (err) {
+//         console.error("Wallet error:", err);
+//         return null;
+//       }
+//     }
+//     return null;
+//   };
+
+//   // Validate file before passing to hook
+//   const getValidatedFile = useCallback(() => {
+//     if (!file) return null;
+
+//     // Basic file validation
+//     if (!(file instanceof File)) {
+//       console.error("Invalid file object:", file);
+//       return null;
+//     }
+//     // Check file type
+//     const isPDF =
+//       file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf");
+//     if (!isPDF) {
+//       console.error("Invalid file type - Only PDF files are supported");
+//       return null;
+//     }
+
+//     // Check file size (e.g., 10MB limit)
+//     if (file.size > 10 * 1024 * 1024) {
+//       console.error("File too large (max 10MB)");
+//       return null;
+//     }
+
+//     return file;
+//   }, [file]);
+
+//   // Handle file selection with validation
+//   const handleFileChange = useCallback(
+//     async (selectedFile) => {
+//       if (!selectedFile) {
+//         setFile(null);
+//         reset();
+//         return;
+//       }
+
+//       // Immediate validation feedback
+//       if (
+//         !selectedFile.type.includes("pdf") &&
+//         !selectedFile.name.toLowerCase().endsWith(".pdf")
+//       ) {
+//         alert("Please select a PDF file");
+//         return;
+//       }
+
+//       if (selectedFile.size > 10 * 1024 * 1024) {
+//         alert("File size must be less than 10MB");
+//         return;
+//       }
+
+//       try {
+//         setFile(selectedFile);
+//         await prepareDocument(selectedFile);
+//       } catch (err) {
+//         console.error("Error preparing document:", err);
+//         setFile(null);
+//       }
+//     },
+//     [prepareDocument, reset]
+//   );
 
 //   const pdfContainerRef = useRef(null);
-//   const { signPdf, status, signatureData, error, reset } = usePdfSigner2();
-//   const { documents, addDocument } = useDocumentHistory();
-//   const { approveAndSign, isSigning } = useApproveSign();
+//   const {
+//     prepareDocument,
+//     signPdf,
+//     status,
+//     signatureData,
+//     error,
+//     reset,
+//     documentPreview,
+//     isSdkInitializing,
+//   } = usePdfSigner2({
+//     file: validatedFile,
+//     walletAddress: getCurrentWalletAddress, // Fetching address
+//     metadata: {}, // Add any metadata you need
+//   });
 
-//   const [debug, setDebug] = useState({});
+//   // Adding validation before using the hook's functions
+//   const safeSignPdf = useCallback(async () => {
+//     if (!file || !address) {
+//       console.error("Missing required parameters for signing");
+//       return;
+//     }
+//     return signPdf(file, address, {
+//       signingTimestamp: new Date().toISOString(),
+//       signatureType: "contract",
+//       signatureVersion: "1.0",
+//     });
+//   }, [file, address, signPdf]);
+
+//   const { documents, addDocument } = useDocumentHistory();
 
 //   useEffect(() => {
-//     setDebug({
-//       fileExists: !!file,
-//       addressExists: !!address,
-//       pdfLoadStatus,
-//       isConnected,
+//     console.log("Current signing state:", {
 //       status,
+//       isSigning,
+//       file: file?.name,
+//       address,
+//       error,
 //     });
-//   }, [file, address, pdfLoadStatus, isConnected, status]);
+//   }, [status, isSigning, file, address, error]);
 
-//   // Add this temporarily in your JSX
-//   <div
-//     style={{
-//       position: "fixed",
-//       bottom: 0,
-//       background: "white",
-//       padding: "10px",
-//       zIndex: 1000,
-//     }}
-//   >
-//     <pre>{JSON.stringify(debug, null, 2)}</pre>
-//   </div>;
+//   // Handle file acceptance
+//   const handleFileAccepted = async (file) => {
+//     if (!file) {
+//       setFile(null);
+//       reset();
+//       return;
+//     }
 
-//   // Handlers
-//   const handleConnect = (addr) => {
-//     setIsConnected(true);
-//     setAddress(addr);
-//     reset();
-//   };
-
-//   const handleDisconnect = () => {
-//     setIsConnected(false);
-//     setAddress("");
-//     setFile(null);
-//     reset();
-//     setIsReadyToSign(false);
-//   };
-
-//   const handleFileAccepted = (file) => {
-//     console.log("File accepted:", file.name);
-//     setFile(file);
-//     setIsReadyToSign(true);
-//     reset();
-//   };
-//   const handleStartSigning = async () => {
 //     try {
-//       await approveAndSign({
-//         file,
-//         address,
-//         signPdf,
-//         addDocument,
-//       });
+//       setFile(file);
+//       await prepareDocument(file);
 //     } catch (err) {
-//       console.error("Signing failed:", err);
+//       console.error("Error preparing document:", err);
+//       setFile(null);
 //     }
 //   };
+//   // Consolidated handler for PDF readiness
+//   const handlePdfReady = useCallback((isReady) => {
+//     setSigningState((prev) => ({
+//       ...prev,
+//       isReady,
+//       error: isReady ? null : prev.error,
+//     }));
+//   }, []);
 
-//   // const handleStartSigning = async () => {
-//   //   // try {
-//   //   //   await approveAndSign({
-//   //   //     file,
-//   //   //     address,
-//   //   //     signPdf,
-//   //   //     addDocument,
-//   //   //   });
-//   //   // } catch (err) {
-//   //   //   console.error("Signing failed:", err);
-//   //   // }
-//   //   try {
-//   //     const signingTimestamp = new Date().toISOString();
-//   //     const result = await signPdf(file, address, {
-//   //       signingTimestamp,
-//   //       signatureType: address,
-//   //       signatureVersion: "1.0",
-//   //     });
+//   // Signing Document
+//   // Use useCallback with all dependencies
+//   const handleSignDocument = useCallback(async () => {
+//     console.log("Sign button was actually clicked!"); // Debug log
 
-//   //     addDocument({
-//   //       id: result.documentId,
-//   //       name: file.name,
-//   //       txHash: result.transactionHash,
-//   //       timestamp: signingTimestamp,
-//   //     });
-//   //   } catch (err) {
-//   //     console.error("Signing error:", err);
-//   //   }
-//   // };
+//     if (!file || !address || signingState.isSigning) {
+//       console.warn("Prevented signing due to missing requirements");
+//       return;
+//     }
 
-//   const handleSelectDocument = (docId) => {
-//     const doc = documents.find((d) => d.id === docId);
-//     if (doc) setSelectedDoc(doc);
-//   };
+//     try {
+//       setSigningState((prev) => ({ ...prev, isSigning: true, error: null }));
 
-//   // Clean up file URLs
-//   // Ensure all required states are properly initialized
+//       const accounts = await window.ethereum.request({
+//         method: "eth_accounts",
+//       });
+//       if (!accounts[0] || accounts[0].toLowerCase() !== address.toLowerCase()) {
+//         throw new Error("Please connect with the correct wallet");
+//       }
+
+//       const result = await signPdf(file, address, {
+//         signingTimestamp: new Date().toISOString(),
+//         signatureType: "contract",
+//         signatureVersion: "1.0",
+//       });
+
+//       addDocument({
+//         id: result.documentId,
+//         name: file.name,
+//         txHash: result.transactionHash,
+//         timestamp: new Date().toISOString(),
+//         signer: address,
+//       });
+
+//       return result;
+//     } catch (error) {
+//       console.error("Signing error:", error);
+//       setSigningState((prev) => ({ ...prev, error: error.message }));
+//       throw error;
+//     } finally {
+//       setSigningState((prev) => ({ ...prev, isSigning: false }));
+//     }
+//   }, [file, address, signPdf, addDocument, signingState.isSigning]); // All dependencies
+
+//   // Determine if ready to sign
+//   // Debug effect to track unwanted calls
 //   useEffect(() => {
-//     return () => {
-//       if (file) URL.revokeObjectURL(file);
+//     const handler = () => {
+//       console.trace("Unexpected handleSignDocument call detected!");
 //     };
-//   }, [file]);
+
+//     // This will log if the function is called unexpectedly
+//     if (process.env.NODE_ENV === "development") {
+//       const original = handleSignDocument;
+//       handleSignDocument = (...args) => {
+//         handler();
+//         return original(...args);
+//       };
+//     }
+//   }, [handleSignDocument]);
+
+//   const isReadyToSign =
+//     status === "ready_for_approval" && !isSdkInitializing && address && file;
 
 //   return (
 //     <div className="app-container">
@@ -996,46 +235,66 @@
 //       <WalletButton
 //         isConnected={isConnected}
 //         address={address}
-//         onConnect={handleConnect}
-//         onDisconnect={handleDisconnect}
+//         onConnect={(addr) => {
+//           setIsConnected(true);
+//           setAddress(addr);
+//           reset();
+//         }}
+//         onDisconnect={() => {
+//           setIsConnected(false);
+//           setAddress("");
+//           setFile(null);
+//           reset();
+//         }}
 //       />
 
 //       {isConnected && (
 //         <div className="main-content">
 //           <FileDropzone
 //             onFileAccepted={handleFileAccepted}
-//             disabled={!isConnected}
+//             disabled={!isConnected || isSdkInitializing}
 //           />
 
 //           {file && (
 //             <div className="pdf-preview-container" ref={pdfContainerRef}>
-//               <PdfPreview
-//                 file={file}
-//                 onLoadSuccess={() => {
-//                   console.log("PDF loaded successfully");
-//                   setIsReadyToSign(true);
-//                   setStatus("ready-to-sign");
-//                 }}
-//                 onLoadError={() => {
-//                   console.error("PDF load failed:", error);
-//                   setIsReadyToSign(false);
-//                   setStatus("load-error");
-//                 }}
-//               />
+//               {documentPreview ? (
+//                 <iframe
+//                   src={documentPreview}
+//                   style={{ width: "100%", height: "500px" }}
+//                   title="PDF Preview"
+//                 />
+//               ) : (
+//                 <PdfPreview
+//                   file={file}
+//                   onLoadSuccess={() => setIsReadyToSign(true)}
+//                   onLoadError={() => setIsReadyToSign(false)}
+//                 />
+//               )}
 
 //               <SigningStatus
-//                 status={status} //status from usePdfSigner
 //                 txHash={signatureData?.transactionHash}
-//                 onSignClick={handleStartSigning}
-//                 isReadyToSign={isReadyToSign && !!address}
-//                 isSigning={isSigning}
+//                 isReady={signingState.isReady}
+//                 isLoading={signingState.isSigning}
+//                 onSignClick={React.memo(
+//                   () => handleSignDocument,
+//                   [
+//                     file?.name,
+//                     address,
+//                     signingState.isReady,
+//                     signingState.isSigning,
+//                   ]
+//                 )}
 //               />
+
+//               {signingState.error && (
+//                 <div className="error-message">{signingState.error}</div>
+//               )}
 //             </div>
 //           )}
 
 //           {isSigning && (
 //             <TransactionTimeline
-//               currentStep={isSigning ? 1 : 0}
+//               currentStep={1}
 //               steps={["PDF Uploaded", "Signing", "Completed"]}
 //             />
 //           )}
@@ -1054,8 +313,8 @@
 //           <div className="sidebar">
 //             <DocumentHistory
 //               documents={documents}
-//               onSelectDocument={handleSelectDocument}
-//               selectedDocId={selectedDoc?.id}
+//               onSelectDocument={(docId) => setSelectedDoc(docId)}
+//               selectedDocId={selectedDoc}
 //             />
 //           </div>
 
@@ -1072,16 +331,19 @@
 //     </div>
 //   );
 // }
-import { useState, useRef, useEffect } from "react";
+
+import { useState, useRef, useEffect, useCallback } from "react";
 import WalletButton from "./components/WalletButton";
 import FileDropzone from "./components/FileDropzone";
 import PdfPreview from "./components/PdfPreview";
 import SigningStatus from "./components/SigningStatus";
-import usePdfSigner from "./hooks/usePdfSigner2";
+import usePdfSigner2 from "./hooks/usePdfSigner2";
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import DocumentHistory from "./components/DocumentHistory";
 import TransactionTimeline from "./components/TransactionTimeline";
-import "../src/App.css";
+import ErrorBoundary from "./components/ErrorBoundary";
+import VerifySignature2 from "./components/VerifySignature2";
+import "./App.css";
 
 export default function App() {
   // State
@@ -1089,35 +351,55 @@ export default function App() {
   const [address, setAddress] = useState("");
   const [file, setFile] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState(null);
-  const [isPdfReady, setIsPdfReady] = useState(false);
-  const [isSigning, setIsSigning] = useState(false);
-
   const pdfContainerRef = useRef(null);
-  const { signPdf, status, signatureData, reset } = usePdfSigner();
+
+  // Document history
   const { documents, addDocument } = useDocumentHistory();
 
-  useEffect(() => {
-    console.log("Current signing state:", {
-      status,
-      isSigning,
-      file: file?.name,
-      address,
-      error,
-    });
-  }, [status, isSigning, file, address, error]);
+  // Validate file before passing to hook
+  const getValidatedFile = useCallback(() => {
+    if (!file) return null;
 
-  // Get current wallet address
-  // const getCurrentWalletAddress = async () => {
-  //   if (window.ethereum) {
-  //     const accounts = await window.ethereum.request({
-  //       method: "eth_accounts",
-  //     });
-  //     return accounts[0] || null;
-  //   }
-  //   return null;
-  // };
-  // In App.jsx
-  const getCurrentWalletAddress = async () => {
+    if (!(file instanceof File)) {
+      console.error("Invalid file object:", file);
+      return null;
+    }
+
+    const isPDF =
+      file.type.includes("pdf") || file.name.toLowerCase().endsWith(".pdf");
+    if (!isPDF) {
+      console.error("Invalid file type - Only PDF files are supported");
+      return null;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      console.error("File too large (max 10MB)");
+      return null;
+    }
+
+    return file;
+  }, [file]);
+
+  const validatedFile = getValidatedFile();
+
+  // PDF Signer Hook
+  const {
+    prepareDocument,
+    signPdf,
+    status,
+    signatureData,
+    error,
+    reset,
+    documentPreview,
+    isSdkInitializing,
+  } = usePdfSigner2({
+    file: validatedFile,
+    walletAddress: address,
+    metadata: {},
+  });
+
+  // Handle wallet connection
+  const getCurrentWalletAddress = useCallback(async () => {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({
@@ -1130,25 +412,83 @@ export default function App() {
       }
     }
     return null;
-  };
+  }, []);
 
-  // Handle PDF load state
-  const handlePdfLoadSuccess = () => {
-    setIsPdfReady(true);
-  };
+  // Handle file acceptance with validation
+  const handleFileAccepted = useCallback(
+    async (selectedFile) => {
+      if (!selectedFile) {
+        setFile(null);
+        reset();
+        return;
+      }
 
-  const handlePdfLoadError = () => {
-    setIsPdfReady(false);
-  };
+      // Immediate validation feedback
+      if (
+        !selectedFile.type.includes("pdf") &&
+        !selectedFile.name.toLowerCase().endsWith(".pdf")
+      ) {
+        alert("Please select a PDF file");
+        return;
+      }
 
-  // Signing function
-  const handleSignDocument = async () => {
-    if (!file || !address) return;
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        alert("File size must be less than 10MB");
+        return;
+      }
+
+      try {
+        setFile(selectedFile);
+        await prepareDocument(selectedFile);
+      } catch (err) {
+        console.error("Error preparing document:", err);
+        setFile(null);
+      }
+    },
+    [prepareDocument, reset]
+  );
+
+  // Determine if ready to sign
+  const isReadyToSign =
+    status === "ready_for_approval" &&
+    !isSdkInitializing &&
+    address &&
+    validatedFile;
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Current signing state:", {
+      status,
+      isSdkInitializing,
+      file: file?.name,
+      address,
+      error,
+      isReadyToSign,
+    });
+  }, [status, isSdkInitializing, file, address, error, isReadyToSign]);
+
+  const isWalletConnected =
+    address && typeof address === "string" && address.length > 0;
+
+  const isReady = useMemo(() => {
+    return validatedFile && isWalletConnected && !isSdkInitializing;
+  }, [validatedFile, isWalletConnected, isSdkInitializing]);
+
+  // Sign document handler
+  const handleSignDocument = useCallback(async () => {
+    console.log("Sign button clicked - verification"); // Debug log
+
+    // if (!validatedFile || !address || isSdkInitializing) {
+    //   console.warn("Signing prevented - missing requirements");
+    //   return;
+    // }
+
+    if (!isReady) {
+      console.warn("Signing prevented - requirements not met");
+      return;
+    }
 
     try {
-      setIsSigning(true);
-
-      // Verify connected wallet
       const currentAddress = await getCurrentWalletAddress();
       if (
         !currentAddress ||
@@ -1157,30 +497,33 @@ export default function App() {
         throw new Error("Connected wallet mismatch");
       }
 
-      // Prepare signature data
-      const signingTimestamp = new Date().toISOString();
-
-      // Sign the document
-      const result = await signPdf(file, address, {
-        signingTimestamp,
-        signatureType: "contract", // or "wallet" depending on your needs
+      const result = await signPdf(validatedFile, address, {
+        signingTimestamp: new Date().toISOString(),
+        signatureType: "contract",
         signatureVersion: "1.0",
       });
 
-      // Store the result
       addDocument({
         id: result.documentId,
-        name: file.name,
+        name: validatedFile.name,
         txHash: result.transactionHash,
-        timestamp: signingTimestamp,
+        timestamp: new Date().toISOString(),
         signer: address,
       });
+
+      return result;
     } catch (error) {
       console.error("Signing failed:", error);
-    } finally {
-      setIsSigning(false);
+      throw error;
     }
-  };
+  }, [
+    validatedFile,
+    address,
+    isSdkInitializing,
+    signPdf,
+    getCurrentWalletAddress,
+    addDocument,
+  ]);
 
   return (
     <div className="app-container">
@@ -1205,39 +548,80 @@ export default function App() {
       {isConnected && (
         <div className="main-content">
           <FileDropzone
-            onFileAccepted={(file) => {
-              setFile(file);
-              setIsPdfReady(false);
-              reset();
-            }}
-            disabled={!isConnected}
+            onFileAccepted={handleFileAccepted}
+            disabled={!isConnected || isSdkInitializing}
           />
 
           {file && (
             <div className="pdf-preview-container" ref={pdfContainerRef}>
-              <PdfPreview
-                file={file}
-                onLoadSuccess={handlePdfLoadSuccess}
-                onLoadError={handlePdfLoadError}
-              />
+              {documentPreview ? (
+                <iframe
+                  src={documentPreview}
+                  style={{ width: "100%", height: "500px" }}
+                  title="PDF Preview"
+                />
+              ) : (
+                <PdfPreview
+                  file={file}
+                  onLoadSuccess={() => {}}
+                  onLoadError={() => {}}
+                />
+              )}
 
               <SigningStatus
+                isReady={isReady}
+                isLoading={isSigning}
                 address={address}
                 txHash={signatureData?.transactionHash}
-                isReadyToSign={isPdfReady}
-                onSignClick={handleSignDocument}
+                isReadyToSign={isReadyToSign}
+                //
+                onSignClick={() => {
+                  handleSignDocument();
+                }}
+                // isLoading={isSdkInitializing}
               />
+
+              {error && <div className="error-message">{error.message}</div>}
             </div>
           )}
 
-          {isSigning && (
+          {isSdkInitializing && (
             <TransactionTimeline
-              currentStep={1}
+              currentStep={status === "signing" ? 1 : 0}
               steps={["PDF Uploaded", "Signing", "Completed"]}
             />
           )}
 
-          {/* ... rest of your components ... */}
+          {signatureData && (
+            <a
+              href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="signed-document-link"
+            >
+              View Signed Document
+            </a>
+          )}
+
+          <div className="sidebar">
+            <DocumentHistory
+              documents={documents}
+              onSelectDocument={(docId) => {
+                const doc = documents.find((d) => d.id === docId);
+                if (doc) setSelectedDoc(doc);
+              }}
+              selectedDocId={selectedDoc?.id}
+            />
+          </div>
+
+          <div className="verification-section">
+            <ErrorBoundary>
+              <VerifySignature2
+                selectedDocument={selectedDoc}
+                address={address}
+              />
+            </ErrorBoundary>
+          </div>
         </div>
       )}
     </div>

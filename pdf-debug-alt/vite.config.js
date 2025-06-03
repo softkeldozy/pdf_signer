@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
 export default defineConfig({
   plugins: [react()],
@@ -7,9 +8,17 @@ export default defineConfig({
     open: true, // Ensure browser opens
   },
   optimizeDeps: {
-    include: ["react", "react-dom", "viem/chains"],
+    include: ["@ethsign/sp-sdk", "react", "react-dom", "viem/chains", "buffer"],
     esbuildOptions: {
       target: "es2020",
+      define: {
+        global: "globalThis", // Required for Buffer polyfill to work
+      },
+      plugins: [
+        NodeGlobalsPolyfillPlugin({
+          buffer: true,
+        }),
+      ],
     },
   },
   define: {
@@ -17,26 +26,3 @@ export default defineConfig({
     global: {},
   },
 });
-
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react";
-
-// export default defineConfig({
-//   plugins: [react()],
-//   optimizeDeps: {
-//     include: ["react", "react-dom", "viem/chains"],
-//     // ...Object.keys(customChains),
-//   },
-//   resolve: {
-//     alias: {
-//       // Force Vite to use chain definitions
-//       "viem/chains": path.resolve(
-//         __dirname,
-//         "./node_modules/viem/chains/index.js"
-//       ),
-//     },
-//   },
-//   esbuild: {
-//     target: "es2020", // Add this to handle modern JS features
-//   },
-// });

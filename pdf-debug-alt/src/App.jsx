@@ -13,7 +13,7 @@ import VerifySignature2 from "./components/VerifySignature2";
 
 import SignatureToolbar from "./components/SignatureToolbar";
 import TransactionTimeline from "./components/TransactionTimeline";
-import SignatureOverlay from "./components/SignatureOverlay";
+// import SignatureOverlay from "./components/SignatureOverlay";
 import "../src/App.css";
 
 export default function App() {

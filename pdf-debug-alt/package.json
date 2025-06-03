@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@ethersproject/providers": "^5.8.0",
     "@ethsign/sp-sdk": "^1.2.7",
     "@heroicons/react": "^2.2.0",
@@ -14,6 +15,7 @@
     "ethers": "^6.14.3",
     "path": "^0.12.7",
     "process": "^0.11.10",
+    "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-error-boundary": "^6.0.0",
