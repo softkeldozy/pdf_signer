@@ -87,9 +87,9 @@ export default function DocumentHistory({ documents, onSelect }) {
             overflowY: "auto",
           }}
         >
-          {documents.map((doc) => (
+          {documents.map((doc, index) => (
             <li
-              key={doc.id}
+              key={`${doc.id}-${index}`} // Ensures key is unique
               onClick={() => onSelect(doc)}
               style={{
                 padding: "12px 8px",
