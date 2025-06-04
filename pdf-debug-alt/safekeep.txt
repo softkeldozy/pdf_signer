@@ -1,0 +1,476 @@
+import { useState, useEffect, useCallback } from "react";
+import { Buffer } from "buffer";
+import { SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
+import { createWalletClient, fallback, createPublicClient, http } from "viem";
+import { Web3Provider } from "@ethersproject/providers";
+import { sepolia } from "viem/chains";
+
+if (typeof window !== "undefined" && !window.Buffer) {
+  window.Buffer = Buffer;
+}
+
+export default function usePdfSigner2(options = {}) {
+  const { file = null, walletAddress = null, metadata = {} } = options;
+
+  const [state, setState] = useState({
+    status: "idle",
+    signatureData: null,
+    error: null,
+    documentPreview: null,
+    isInitializing: false,
+  });
+
+  const prepareDocument = useCallback(
+    async (file) => {
+      try {
+        setState((prev) => ({ ...prev, status: "preparing" }));
+
+        if (
+          !file?.type?.includes("pdf") &&
+          !file?.name?.toLowerCase().endsWith(".pdf")
+        ) {
+          throw new Error("Only PDF files are supported");
+        }
+
+        if (state.documentPreview) {
+          URL.revokeObjectURL(state.documentPreview);
+        }
+
+        const previewUrl = URL.createObjectURL(file);
+        setState((prev) => ({
+          ...prev,
+          documentPreview: previewUrl,
+          status: "ready_for_approval",
+        }));
+
+        return previewUrl;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          status: "error",
+          error: {
+            message: err.message || "Failed to prepare document",
+            details: err.stack,
+          },
+        }));
+        throw err;
+      }
+    },
+    [state.documentPreview]
+  );
+
+  // const initializeSDK = useCallback(
+  //   async ({
+  //     rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+  //     chain = sepolia,
+  //   } = {}) => {
+  //     try {
+  //       if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //       const publicClient = createPublicClient({
+  //         chain,
+  //         transport: http(rpcUrl),
+  //       });
+
+  //       const provider = new Web3Provider(window.ethereum);
+  //       await provider.send("eth_requestAccounts", []);
+  //       const signer = await provider.getSigner();
+
+  //       const client = new SignProtocolClient({
+  //         mode: SpMode.OnChain,
+  //         publicClient,
+  //         signer,
+  //         chain,
+  //       });
+
+  //       return client;
+  //     } catch (error) {
+  //       console.error("SDK initialization error:", error);
+  //       throw new Error(`SDK initialization failed: ${error.message}`);
+  //     }
+  //   },
+  //   []
+  // );
+
+  // const initializeSDK = useCallback(async (options) => {
+  //   try {
+  //     // Ensure options is always an object before destructuring
+  //     const {
+  //       rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+  //       chain = sepolia,
+  //     } = options || {};
+
+  //     if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //     const publicClient = createPublicClient({
+  //       chain,
+  //       transport: http(rpcUrl),
+  //     });
+
+  //     const provider = new Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = await provider.getSigner();
+
+  //     const client = new SignProtocolClient({
+  //       mode: SpMode.OnChain,
+  //       publicClient,
+  //       signer,
+  //       chain,
+  //     });
+
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   }
+  // }, []);
+
+  const initializeSDK = useCallback(async (opts) => {
+    const {
+      rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+      chain = sepolia,
+    } = opts || {}; // <== safely default if `opts` is undefined
+
+    try {
+      if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+      const publicClient = createPublicClient({
+        chain,
+        transport: http(rpcUrl),
+      });
+
+      const provider = new Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+
+      const client = new SignProtocolClient({
+        mode: SpMode.OnChain,
+        publicClient,
+        signer,
+        chain,
+      });
+
+      return client;
+    } catch (error) {
+      console.error("SDK initialization error:", error);
+      throw new Error(`SDK initialization failed: ${error.message}`);
+    }
+  }, []);
+
+  const signPdf = useCallback(
+    async (file, address, metadata = {}) => {
+      try {
+        setState((prev) => ({ ...prev, status: "signing" }));
+
+        const client = await initializeSDK({
+          rpcUrl: import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+          chain: sepolia,
+        });
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        const result = await client.createAttestation({
+          schemaId: 0xd9c6,
+          data: {
+            filename: file.name,
+            fielData: Array.from(uint8Array),
+            signer: address,
+            timestamp: new Date().toISOString(),
+            ...metadata,
+          },
+        });
+
+        setState((prev) => ({
+          ...prev,
+          status: "success",
+          signatureData: result,
+        }));
+
+        return result;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          status: "error",
+          error: {
+            message: error.message,
+            details: error.stack,
+          },
+        }));
+        throw error;
+      }
+    },
+    [initializeSDK]
+  );
+
+  const reset = useCallback(() => {
+    if (state.documentPreview) {
+      URL.revokeObjectURL(state.documentPreview);
+    }
+    setState({
+      status: "idle",
+      signatureData: null,
+      error: null,
+      documentPreview: null,
+      isInitializing: false,
+    });
+  }, [state.documentPreview]);
+
+  useEffect(() => {
+    return () => {
+      if (state.documentPreview) {
+        URL.revokeObjectURL(state.documentPreview);
+      }
+    };
+  }, [state.documentPreview]);
+
+  return {
+    ...state,
+    prepareDocument,
+    signPdf,
+    reset,
+    isSdkInitializing: state.isInitializing,
+  };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useState, useEffect, useCallback } from "react";
+import { Buffer } from "buffer";
+import { SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
+import { createPublicClient, http } from "viem";
+import { Web3Provider } from "@ethersproject/providers";
+import { sepolia } from "viem/chains";
+
+if (typeof window !== "undefined" && !window.Buffer) {
+  window.Buffer = Buffer;
+}
+
+export default function usePdfSigner2(options = {}) {
+  const { file = null, walletAddress = null, metadata = {} } = options;
+
+  const [state, setState] = useState({
+    status: "idle",
+    signatureData: null,
+    error: null,
+    documentPreview: null,
+    isInitializing: false,
+  });
+
+  const prepareDocument = useCallback(
+    async (file) => {
+      try {
+        setState((prev) => ({ ...prev, status: "preparing" }));
+
+        if (
+          !file?.type?.includes("pdf") &&
+          !file?.name?.toLowerCase().endsWith(".pdf")
+        ) {
+          throw new Error("Only PDF files are supported");
+        }
+
+        if (state.documentPreview) {
+          URL.revokeObjectURL(state.documentPreview);
+        }
+
+        const previewUrl = URL.createObjectURL(file);
+        setState((prev) => ({
+          ...prev,
+          documentPreview: previewUrl,
+          status: "ready_for_approval",
+        }));
+
+        return previewUrl;
+      } catch (err) {
+        setState((prev) => ({
+          ...prev,
+          status: "error",
+          error: {
+            message: err.message || "Failed to prepare document",
+            details: err.stack,
+          },
+        }));
+        throw err;
+      }
+    },
+    [state.documentPreview]
+  );
+
+  // const initializeSDK = useCallback(async (opts) => {
+  //   const {
+  //     rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+  //     chain = sepolia,
+  //   } = opts || {}; // ✅ Safe destructuring
+
+  //   const finalRpcUrl = rpcUrl || import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL;
+  //   if (!finalRpcUrl) throw new Error("RPC URL is missing");
+
+  //   try {
+  //     if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //     const publicClient = createPublicClient({
+  //       chain,
+  //       transport: http(finalRpcUrl),
+  //     });
+
+  //     const provider = new Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = await provider.getSigner();
+
+  //     const client = new SignProtocolClient({
+  //       mode: SpMode.OnChain,
+  //       publicClient,
+  //       signer,
+  //       chain,
+  //     });
+
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   }
+  // }, []);
+  const initializeSDK = useCallback(async (options) => {
+    try {
+      const opts = options || {}; // Ensure it's always an object
+
+      // Use environment fallback if not provided in options
+      const rpcUrl =
+        opts.rpcUrl || import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL;
+      const chain = opts.chain || sepolia;
+
+      if (!rpcUrl) {
+        throw new Error("RPC URL is missing from both options and environment");
+      }
+
+      const publicClient = createPublicClient({
+        chain,
+        transport: http(rpcUrl),
+      });
+
+      const provider = new Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+
+      const client = new SignProtocolClient({
+        mode: SpMode.OnChain,
+        publicClient,
+        signer,
+        chain,
+      });
+
+      return client;
+    } catch (error) {
+      console.error("SDK initialization error:", error);
+      throw new Error(`SDK initialization failed: ${error.message}`);
+    }
+  }, []);
+
+  const signPdf = useCallback(
+    async (file, address, metadata = {}) => {
+      try {
+        setState((prev) => ({ ...prev, status: "signing" }));
+
+        const client = await initializeSDK(); // ✅ No arg or safe default
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8Array = new Uint8Array(arrayBuffer);
+
+        const result = await client.createAttestation({
+          schemaId: 0xd9c6,
+          data: {
+            filename: file.name,
+            fielData: Array.from(uint8Array),
+            signer: address,
+            timestamp: new Date().toISOString(),
+            ...metadata,
+          },
+        });
+
+        setState((prev) => ({
+          ...prev,
+          status: "success",
+          signatureData: result,
+        }));
+
+        return result;
+      } catch (error) {
+        setState((prev) => ({
+          ...prev,
+          status: "error",
+          error: {
+            message: error.message,
+            details: error.stack,
+          },
+        }));
+        throw error;
+      }
+    },
+    [initializeSDK]
+  );
+
+  const reset = useCallback(() => {
+    if (state.documentPreview) {
+      URL.revokeObjectURL(state.documentPreview);
+    }
+    setState({
+      status: "idle",
+      signatureData: null,
+      error: null,
+      documentPreview: null,
+      isInitializing: false,
+    });
+  }, [state.documentPreview]);
+
+  useEffect(() => {
+    return () => {
+      if (state.documentPreview) {
+        URL.revokeObjectURL(state.documentPreview);
+      }
+    };
+  }, [state.documentPreview]);
+
+  return {
+    ...state,
+    prepareDocument,
+    signPdf,
+    reset,
+    isSdkInitializing: state.isInitializing,
+  };
+}

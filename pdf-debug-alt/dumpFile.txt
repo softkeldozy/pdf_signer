@@ -358,3 +358,145 @@ usePdfSigner2.js files
   //   },
   //   [initializeSDK]
   // );
+
+
+
+
+
+
+
+
+
+
+
+
+
+   // const initializeSDK = useCallback(async () => {
+  //   try {
+  //     setState((prev) => ({ ...prev, isInitializing: true }));
+
+  //     const transport = fallback([
+  //       http(import.meta.env.VITE_SEPOLIA_RPC_URL),
+  //       http(import.meta.env.VITE_BACKUP_RPC_1),
+  //       http(import.meta.env.VITE_BACKUP_RPC_2),
+  //     ]);
+
+  //     const walletClient = createWalletClient({
+  //       chain: sepolia,
+  //       transport,
+  //       account: walletAddress,
+  //     });
+
+  //     const client = new SignProtocolClient(walletClient, {
+  //       mode: SpMode.OnChain,
+  //     });
+
+  //     // await client.connect();
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   } finally {
+  //     setState((prev) => ({ ...prev, isInitializing: false }));
+  //   }
+  // }, [walletAddress]);
+
+  // const initializeSDK = useCallback(async () => {
+  //   try {
+  //     setState((prev) => ({ ...prev, isInitializing: true }));
+
+  //     const rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL;
+
+  //     if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //     // Viem public client with custom RPC (bypasses sepolia.drpc.org)
+  //     const publicClient = createPublicClient({
+  //       chain: sepolia,
+  //       transport: http(rpcUrl),
+  //     });
+
+  //     // Ethers.js signer from MetaMask
+  //     const provider = new Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = await provider.getSigner();
+
+  //     // Initialize SignProtocolClient with explicit signer + publicClient
+  //     const client = new SignProtocolClient({
+  //       mode: SpMode.OnChain,
+  //       publicClient,
+  //       signer,
+  //     });
+
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   } finally {
+  //     setState((prev) => ({ ...prev, isInitializing: false }));
+  //   }
+  // }, []);
+
+  // const initializeSDK = async (options = {}) => {
+  //   try {
+  //     const rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL;
+
+  //     if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //     // Create public client
+  //     const publicClient = createPublicClient({
+  //       chain: sepolia,
+  //       transport: http(rpcUrl),
+  //     });
+
+  //     // Setup wallet provider and signer
+  //     const provider = new Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = await provider.getSigner();
+
+  //     // ✅ Correct usage: pass a single options object
+  //     const client = new SignProtocolClient({
+  //       mode: SpMode.OnChain,
+  //       publicClient,
+  //       signer,
+  //       chain: sepolia, // Required by the SDK
+  //     });
+
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   }
+  // };
+
+  // const initializeSDK = async ({
+  //   rpcUrl = import.meta.env.VITE_ALCHEMY_SEPOLIA_RPC_URL,
+  //   chain = sepolia,
+  // } = {}) => {
+  //   try {
+  //     if (!rpcUrl) throw new Error("RPC URL is missing from environment");
+
+  //     // Create public client
+  //     const publicClient = createPublicClient({
+  //       chain,
+  //       transport: http(rpcUrl),
+  //     });
+
+  //     // Setup wallet provider and signer
+  //     const provider = new Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = await provider.getSigner();
+
+  //     // Create client instance
+  //     const client = new SignProtocolClient({
+  //       mode: SpMode.OnChain,
+  //       publicClient,
+  //       signer,
+  //       chain,
+  //     });
+
+  //     return client;
+  //   } catch (error) {
+  //     console.error("SDK initialization error:", error);
+  //     throw new Error(`SDK initialization failed: ${error.message}`);
+  //   }
+  // };
