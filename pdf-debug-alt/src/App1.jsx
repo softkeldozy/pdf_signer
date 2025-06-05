@@ -8,6 +8,7 @@ import DocumentHistory from "./components/DocumentHistory";
 import TransactionTimeline from "./components/TransactionTimeline";
 import ErrorBoundary from "./components/ErrorBoundary";
 import VerifySignature2 from "./components/VerifySignature2";
+import Header from "./components/Header";
 import "./App.css";
 
 export default function App1() {
@@ -227,8 +228,9 @@ export default function App1() {
 
   return (
     <div className="app-container">
-      <h1>PDF Signing DApp</h1>
-
+      <h2>
+        <Header />
+      </h2>
       <WalletButton
         isConnected={isConnected}
         address={address}

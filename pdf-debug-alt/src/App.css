@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Allura&family=Playfair+Display:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap");
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -132,4 +135,43 @@
   width: 100%;
   margin: 0 auto;
   padding: 24px;
+}
+.italic-message {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.1rem; /* slightly bigger than normal */
+  color: #666; /* or use var(--gray) if defined */
+}
+.intro .word1 {
+  font-family: "Allura", cursive;
+  font-size: 3rem;
+  color: #264e3f;
+  color: #fff;
+  letter-spacing: 10.5px;
+  overflow-wrap: break-world;
+  margin-right: 10px;
+}
+.intro .word2 {
+  font-family: "Playfair Display", serif;
+  font-weight: 300;
+  font-size: 2.5rem;
+  color: #264e3f;
+  margin-right: 10px;
+}
+
+.intro .word3 {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: #264e3f;
+  margin-right: 10px;
+}
+.walletBtn {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+}
+.addyTxt {
+  font-family: "Courier New", Courier, monospace;
+  color: #666;
+  font-weight: 40;
 }

@@ -30,7 +30,7 @@ export default function WalletConnector({ onConnect }) {
   };
 
   return (
-    <div>
+    <div className="btn">
       <button
         onClick={connectWallet}
         style={{
