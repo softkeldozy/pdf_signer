@@ -37,7 +37,14 @@ export default function PdfPreview({ file, onLoadError }) {
   }, [file]);
 
   return (
-    <div className="pdf-preview-wrapper">
+    <div
+      style={{
+        padding: "20px",
+        border: "1px solid #e0e0e0",
+        borderRadius: "8px",
+        marginBottom: "20px",
+      }}
+    >
       {isLoading && (
         <div className="loading-indicator">
           <div className="spinner" />
@@ -50,7 +57,9 @@ export default function PdfPreview({ file, onLoadError }) {
         style={{
           width: "100%",
           height: "500px",
-          border: "1px solid #ddd",
+          border: "none",
+          borderRadius: "8px",
+          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
           display: isLoading ? "none" : "block",
         }}
       />

@@ -70,8 +70,8 @@ export default function FileDropzone({ onFileAccepted, disabled }) {
   };
 
   return (
-    <div className="card">
-      <h2>Upload Document</h2>
+    <div className="card material-card">
+      <h2 className="material-title">Upload Document</h2>
       <div
         className={`dropzone ${isDragging ? "dragging" : ""}`}
         onDragEnter={handleDrag}
@@ -84,6 +84,8 @@ export default function FileDropzone({ onFileAccepted, disabled }) {
           borderRadius: "var(--border-radius)",
           padding: "3rem",
           textAlign: "center",
+          backgroundColor: "#fafafa",
+          transition: "border-color 0.3s ease, background-color 0.3s ease",
           cursor: disabled ? "not-allowed" : "pointer",
           opacity: disabled ? 0.7 : 1,
         }}

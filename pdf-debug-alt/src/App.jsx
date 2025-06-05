@@ -11,9 +11,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 
 import VerifySignature2 from "./components/VerifySignature2";
 
-import SignatureToolbar from "./components/SignatureToolbar";
-import TransactionTimeline from "./components/TransactionTimeline";
-// import SignatureOverlay from "./components/SignatureOverlay";
 import "../src/App.css";
 
 export default function App() {
@@ -100,8 +97,8 @@ export default function App() {
             disabled={!isConnected}
           />
           {file && <PdfPreview file={file} />}
-          <SigningStatus status={status} file={file} />
-          {signatureData && (
+          {/* <SigningStatus status={status} file={file} /> */}
+          {/* {signatureData && (
             <div className="signed-document-link">
               <a
                 href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
@@ -111,7 +108,7 @@ export default function App() {
                 View Signed Document
               </a>
             </div>
-          )}
+          )} */}
 
           <div className="sidebar">
             <DocumentHistory

@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import WalletButton from "./components/WalletButton";
 import FileDropzone from "./components/FileDropzone";
 import PdfPreview from "./components/PdfPreview";
-import SigningStatus from "./components/SigningStatus";
 import usePdfSigner2 from "./hooks/usePdfSigner2";
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import DocumentHistory from "./components/DocumentHistory";
@@ -11,7 +10,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import VerifySignature2 from "./components/VerifySignature2";
 import "./App.css";
 
-export default function App() {
+export default function App1() {
   // State
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
@@ -21,7 +20,27 @@ export default function App() {
 
   // Document history
   const { documents, addDocument } = useDocumentHistory();
+  // Safe connection handler
+  const handleConnect = (addr) => {
+    try {
+      if (!addr) throw new Error("Invalid address received");
+      setIsConnected(true);
+      setAddress(addr);
+      reset();
+    } catch (err) {
+      console.error("Connection handler error:", err);
+      setIsConnected(false);
+      setAddress("");
+    }
+  };
 
+  // Safe disconnect handler
+  const handleDisconnect = () => {
+    setIsConnected(false);
+    setAddress("");
+    setFile(null);
+    reset();
+  };
   // Validate file before passing to hook
   const getValidatedFile = useCallback(() => {
     if (!file) return null;
@@ -81,40 +100,60 @@ export default function App() {
   }, []);
 
   // Handle file acceptance with validation
-  const handleFileAccepted = useCallback(
-    async (selectedFile) => {
-      if (!selectedFile) {
-        setFile(null);
-        reset();
-        return;
-      }
+  // const handleFileAccepted = useCallback(
+  //   async (selectedFile) => {
+  //     if (!selectedFile) {
+  //       setFile(null);
+  //       reset();
+  //       return;
+  //     }
 
-      // Immediate validation feedback
-      if (
-        !selectedFile.type.includes("pdf") &&
-        !selectedFile.name.toLowerCase().endsWith(".pdf")
-      ) {
-        alert("Please select a PDF file");
-        return;
-      }
+  //     // Immediate validation feedback
+  //     if (
+  //       !selectedFile.type.includes("pdf") &&
+  //       !selectedFile.name.toLowerCase().endsWith(".pdf")
+  //     ) {
+  //       alert("Please select a PDF file");
+  //       return;
+  //     }
 
-      if (selectedFile.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
-        return;
-      }
+  //     if (selectedFile.size > 10 * 1024 * 1024) {
+  //       alert("File size must be less than 10MB");
+  //       return;
+  //     }
 
-      try {
-        setFile(selectedFile);
-        await prepareDocument(selectedFile);
-      } catch (err) {
-        console.error("Error preparing document:", err);
-        setFile(null);
-      }
-    },
-    [prepareDocument, reset]
-  );
+  //     try {
+  //       setFile(selectedFile);
+  //       await prepareDocument(selectedFile);
+  //     } catch (err) {
+  //       console.error("Error preparing document:", err);
+  //       setFile(null);
+  //     }
+  //   },
+  //   [prepareDocument, reset]
+  // );
 
   // Determine if ready to sign
+  const handleFileAccepted = async (file) => {
+    if (!file) {
+      setFile(null);
+      reset();
+      return;
+    }
+
+    setFile(file);
+    try {
+      const result = await signPdf(file, address);
+      addDocument({
+        id: result.documentId,
+        name: file.name,
+        txHash: result.transactionHash,
+      });
+    } catch (err) {
+      console.error("Signing failed:", err);
+    }
+  };
+
   const isReadyToSign =
     status === "ready_for_approval" &&
     !isSdkInitializing &&
@@ -136,9 +175,9 @@ export default function App() {
   const isWalletConnected =
     address && typeof address === "string" && address.length > 0;
 
-  const isReady = useMemo(() => {
-    return validatedFile && isWalletConnected && !isSdkInitializing;
-  }, [validatedFile, isWalletConnected, isSdkInitializing]);
+  // const isReady = useMemo(() => {
+  //   return validatedFile && isWalletConnected && !isSdkInitializing;
+  // }, [validatedFile, isWalletConnected, isSdkInitializing]);
 
   // Sign document handler
   const handleSignDocument = useCallback(async () => {
@@ -193,67 +232,48 @@ export default function App() {
       <WalletButton
         isConnected={isConnected}
         address={address}
-        onConnect={(addr) => {
-          setIsConnected(true);
-          setAddress(addr);
-          reset();
-        }}
-        onDisconnect={() => {
-          setIsConnected(false);
-          setAddress("");
-          setFile(null);
-          reset();
-        }}
+        onConnect={handleConnect}
+        onDisconnect={handleDisconnect}
       />
 
       {isConnected && (
         <div className="main-content">
-          <FileDropzone
-            onFileAccepted={handleFileAccepted}
-            disabled={!isConnected || isSdkInitializing}
-          />
-
-          {file && (
-            <div className="pdf-preview-container" ref={pdfContainerRef}>
-              {documentPreview ? (
-                <iframe
-                  src={documentPreview}
-                  style={{ width: "100%", height: "500px" }}
-                  title="PDF Preview"
-                />
-              ) : (
-                <PdfPreview
-                  file={file}
-                  onLoadSuccess={() => {}}
-                  onLoadError={() => {}}
-                />
-              )}
-
-              <SigningStatus
-                isReady={isReady}
-                isLoading={isSigning}
-                address={address}
-                txHash={signatureData?.transactionHash}
-                isReadyToSign={isReadyToSign}
-                //
-                onSignClick={() => {
-                  handleSignDocument();
-                }}
-                // isLoading={isSdkInitializing}
+          <div className="upload-preview-container">
+            <div className="card upload-card">
+              <FileDropzone
+                onFileAccepted={handleFileAccepted}
+                disabled={!isConnected || isSdkInitializing}
               />
-
-              {error && <div className="error-message">{error.message}</div>}
             </div>
-          )}
 
-          {isSdkInitializing && (
-            <TransactionTimeline
-              currentStep={status === "signing" ? 1 : 0}
-              steps={["PDF Uploaded", "Signing", "Completed"]}
-            />
-          )}
+            {file && (
+              <div className="card preview-card" ref={pdfContainerRef}>
+                <h3>Document Preview</h3>
+                {documentPreview ? (
+                  <iframe
+                    src={documentPreview}
+                    title="PDF Preview"
+                    style={{ width: "100%", height: "500px", border: "none" }}
+                  />
+                ) : (
+                  <PdfPreview
+                    file={file}
+                    // onLoadSuccess={() => {}}
+                    // onLoadError={() => {}}
+                  />
+                )}
 
-          {signatureData && (
+                {error && <div className="error-message">{error.message}</div>}
+              </div>
+            )}
+            {isSdkInitializing && (
+              <TransactionTimeline
+                currentStep={status === "signing" ? 1 : 0}
+                steps={["PDF Uploaded", "Signing", "Completed"]}
+              />
+            )}
+
+            {/* {signatureData && (
             <a
               href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
               target="_blank"
@@ -262,26 +282,25 @@ export default function App() {
             >
               View Signed Document
             </a>
-          )}
-
-          <div className="sidebar">
-            <DocumentHistory
-              documents={documents}
-              onSelectDocument={(docId) => {
-                const doc = documents.find((d) => d.id === docId);
-                if (doc) setSelectedDoc(doc);
-              }}
-              selectedDocId={selectedDoc?.id}
-            />
-          </div>
-
-          <div className="verification-section">
-            <ErrorBoundary>
-              <VerifySignature2
-                selectedDocument={selectedDoc}
-                address={address}
+          )} */}
+            <div className="card history-card">
+              <DocumentHistory
+                documents={documents}
+                onSelectDocument={(docId) => {
+                  const doc = documents.find((d) => d.id === docId);
+                  if (doc) setSelectedDoc(doc);
+                }}
+                selectedDocId={selectedDoc?.id}
               />
-            </ErrorBoundary>
+            </div>
+            <div className="card verify-card">
+              <ErrorBoundary>
+                <VerifySignature2
+                  selectedDocument={selectedDoc}
+                  address={address}
+                />
+              </ErrorBoundary>
+            </div>
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App1 from "./App";
+import App1 from "./App1";
 import "./styles/index.css";
 
 // Option 1: Using the installed package (after running npm install)
