@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Buffer } from "buffer";
 import { SignProtocolClient, SpMode } from "@ethsign/sp-sdk";
 import { createWalletClient, createPublicClient, http } from "viem";
-import customSepolia from "./customSepolia";
+import { uploadPDFToBackend } from "./uploadPDFToBackend";
 import { Web3Provider } from "@ethersproject/providers";
 import { keccak256 } from "viem";
 import { mainnet } from "viem/chains";
@@ -97,15 +97,24 @@ export default function usePdfSigner2(options = {}) {
   const signPdf = useCallback(
     async (file, address, metadata = {}) => {
       try {
+        // Upload to backend first
+        const uploadedUrl = await uploadPDFToBackend(file);
+
+        // Optional: validate URL
+        if (!uploadedUrl) throw new Error("No URL returned from backend");
+
+        // ✅ 2. Update state: signing in progress
         setState((prev) => ({ ...prev, status: "signing" }));
 
+        // ✅ 3. Initialize SDK (SignProtocolClient)
         const client = await initializeSDK();
 
+        // ✅ 4. Hash the file (you’re already doing this)
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
-        // Hash the file (e.g., using Keccak256)
-        const fileHash = keccak256(uint8Array); // returns 0x...
+        const fileHash = keccak256(uint8Array); // returns 0x..
 
+        // ✅ 5. Send attestation with URL in metadata
         const result = await client.createAttestation({
           schemaId: 0x2419,
           data: {
@@ -114,10 +123,10 @@ export default function usePdfSigner2(options = {}) {
             // signer: address,
             // timestamp: new Date().toISOString(),
             // ...metadata,
-            deploy: "This is it to begin with",
+            deploy: uploadedUrl,
           },
         });
-
+        // ✅ 6. Update state: success
         setState((prev) => ({
           ...prev,
           status: "success",
