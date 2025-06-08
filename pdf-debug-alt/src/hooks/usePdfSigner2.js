@@ -6,6 +6,7 @@ import { uploadPDFToBackend } from "./uploadPDFToBackend";
 import { Web3Provider } from "@ethersproject/providers";
 import { keccak256 } from "viem";
 import { mainnet } from "viem/chains";
+import axios from "axios";
 
 if (typeof window !== "undefined" && !window.Buffer) {
   window.Buffer = Buffer;
@@ -95,13 +96,14 @@ export default function usePdfSigner2(options = {}) {
   }, []);
 
   const signPdf = useCallback(
-    async (file, address, metadata = {}) => {
+    async (file, address) => {
       try {
-        // Upload to backend first
-        const uploadedUrl = await uploadPDFToBackend(file);
+        setState((prev) => ({ ...prev, status: "uploading" }));
 
+        // Upload to backend first
+        const fileUrl = await uploadPDFToBackend(file);
         // Optional: validate URL
-        if (!uploadedUrl) throw new Error("No URL returned from backend");
+        if (!fileUrl) throw new Error("No URL returned from backend");
 
         // ✅ 2. Update state: signing in progress
         setState((prev) => ({ ...prev, status: "signing" }));
@@ -109,24 +111,30 @@ export default function usePdfSigner2(options = {}) {
         // ✅ 3. Initialize SDK (SignProtocolClient)
         const client = await initializeSDK();
 
-        // ✅ 4. Hash the file (you’re already doing this)
+        // ✅ 4.Read file and Hash the file (you’re already doing this)
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         const fileHash = keccak256(uint8Array); // returns 0x..
+        const filename = file.name;
+        const signedAt = new Date().toISOString();
 
         // ✅ 5. Send attestation with URL in metadata
         const result = await client.createAttestation({
           schemaId: 0x2419,
           data: {
-            // filename: file.name,
-            // fileData: fileHash,
-            // signer: address,
-            // timestamp: new Date().toISOString(),
-            // ...metadata,
-            deploy: uploadedUrl,
+            deploy: fileUrl,
           },
         });
-        // ✅ 6. Update state: success
+
+        // 6. Send metadata to /documents
+        await axios.post("http://localhost:5000/documents", {
+          fileUrl,
+          filename,
+          signer: address,
+          signedAt,
+          hash: fileHash,
+        });
+        // ✅ 7. Update state: success
         setState((prev) => ({
           ...prev,
           status: "success",

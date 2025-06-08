@@ -21,7 +21,7 @@ export default function DocumentHistory({
       <ul className="history-list">
         {documents.map((doc) => (
           <li
-            key={doc.id}
+            key={doc.id || doc.timestamp}
             className={`history-item ${
               onSelectedDocId === doc.id ? "selected" : ""
             }`}
