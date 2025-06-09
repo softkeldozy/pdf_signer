@@ -96,7 +96,7 @@ export default function usePdfSigner2(options = {}) {
   }, []);
 
   const signPdf = useCallback(
-    async (file, address) => {
+    async (file, address, onComplete) => {
       try {
         setState((prev) => ({ ...prev, status: "uploading" }));
 
@@ -134,6 +134,12 @@ export default function usePdfSigner2(options = {}) {
           signedAt,
           hash: fileHash,
         });
+        // Refresh Document History
+        // Call the callback to fetch updated list
+        if (onComplete) {
+          await onComplete((prev) => prev + 1);
+        }
+
         // ✅ 7. Update state: success
         setState((prev) => ({
           ...prev,

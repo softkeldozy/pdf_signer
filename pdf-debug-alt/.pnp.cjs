@@ -73,7 +73,8 @@ const RAW_RUNTIME_STATE =
           ["viem", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.30.1"],\
           ["vite", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.3.5"],\
           ["wagmi", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.15.4"],\
-          ["web3.storage", "npm:4.5.5"]\
+          ["web3.storage", "npm:4.5.5"],\
+          ["zustand", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.0.5"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -11846,7 +11847,8 @@ const RAW_RUNTIME_STATE =
           ["viem", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.30.1"],\
           ["vite", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.3.5"],\
           ["wagmi", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:2.15.4"],\
-          ["web3.storage", "npm:4.5.5"]\
+          ["web3.storage", "npm:4.5.5"],\
+          ["zustand", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.0.5"]\
         ],\
         "linkType": "SOFT"\
       }]\
@@ -14347,6 +14349,13 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
+      ["npm:5.0.5", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/zustand-npm-5.0.5-d08c9c8d7f-10c0.zip/node_modules/zustand/",\
+        "packageDependencies": [\
+          ["zustand", "npm:5.0.5"]\
+        ],\
+        "linkType": "SOFT"\
+      }],\
       ["virtual:5a7edb9d23140fd5eddd77fe7c8b05807131ce670b87fd732db66945d84bcb8dd6907e86c57ae21fac71668cfa4615e282757ae87f30bbc5f6d6c5fff8e9ebdf#npm:5.0.0", {\
         "packageLocation": "./.yarn/__virtual__/zustand-virtual-3151058f7f/4/AppData/Local/Yarn/Berry/cache/zustand-npm-5.0.0-8e7f005cb5-10c0.zip/node_modules/zustand/",\
         "packageDependencies": [\
@@ -14357,6 +14366,27 @@ const RAW_RUNTIME_STATE =
           ["react", null],\
           ["use-sync-external-store", null],\
           ["zustand", "virtual:5a7edb9d23140fd5eddd77fe7c8b05807131ce670b87fd732db66945d84bcb8dd6907e86c57ae21fac71668cfa4615e282757ae87f30bbc5f6d6c5fff8e9ebdf#npm:5.0.0"]\
+        ],\
+        "packagePeers": [\
+          "@types/immer",\
+          "@types/react",\
+          "@types/use-sync-external-store",\
+          "immer",\
+          "react",\
+          "use-sync-external-store"\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.0.5", {\
+        "packageLocation": "./.yarn/__virtual__/zustand-virtual-5e7097fc17/4/AppData/Local/Yarn/Berry/cache/zustand-npm-5.0.5-d08c9c8d7f-10c0.zip/node_modules/zustand/",\
+        "packageDependencies": [\
+          ["@types/immer", null],\
+          ["@types/react", "npm:18.3.23"],\
+          ["@types/use-sync-external-store", null],\
+          ["immer", null],\
+          ["react", "npm:19.1.0"],\
+          ["use-sync-external-store", null],\
+          ["zustand", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:5.0.5"]\
         ],\
         "packagePeers": [\
           "@types/immer",\

@@ -631,3 +631,59 @@ export default function usePdfSigner2(options = {}) {
   //   </div>
   // );
 
+
+
+
+
+
+
+
+
+// export default function DocumentHistory({
+//   documents = [],
+//   onSelectDocument,
+//   onSelectedDocId,
+// }) {
+//   const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+//   const handleClear = () => {
+//     localStorage.removeItem("signedDocuments");
+//     onSelect(null);
+//     window.location.reload(); // Refresh to reflect changes
+//   };
+//   return (
+//     <div className="document-history">
+//       <h3>Document History</h3>
+//       <ul className="history-list">
+//         {documents.map((doc) => (
+//           <li
+//             key={doc.id || doc.timestamp}
+//             className={`history-item ${
+//               onSelectedDocId === doc.id ? "selected" : ""
+//             }`}
+//             onClick={() => onSelectDocument(doc.id)}
+//           >
+//             <div>
+//               <strong>
+//                 Signed: {new Date(doc.timestamp).toLocaleString()}
+//               </strong>
+//             </div>
+//             {doc.fileUrl && (
+//               <div>
+//                 <a
+//                   href={doc.fileUrl}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="file-link"
+//                 >
+//                   View PDF
+//                 </a>
+//               </div>
+//             )}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   );
+// }
+// src/components/DocumentHistory.jsx

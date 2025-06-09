@@ -100,41 +100,6 @@ export default function App1() {
     return null;
   }, []);
 
-  // Handle file acceptance with validation
-  // const handleFileAccepted = useCallback(
-  //   async (selectedFile) => {
-  //     if (!selectedFile) {
-  //       setFile(null);
-  //       reset();
-  //       return;
-  //     }
-
-  //     // Immediate validation feedback
-  //     if (
-  //       !selectedFile.type.includes("pdf") &&
-  //       !selectedFile.name.toLowerCase().endsWith(".pdf")
-  //     ) {
-  //       alert("Please select a PDF file");
-  //       return;
-  //     }
-
-  //     if (selectedFile.size > 10 * 1024 * 1024) {
-  //       alert("File size must be less than 10MB");
-  //       return;
-  //     }
-
-  //     try {
-  //       setFile(selectedFile);
-  //       await prepareDocument(selectedFile);
-  //     } catch (err) {
-  //       console.error("Error preparing document:", err);
-  //       setFile(null);
-  //     }
-  //   },
-  //   [prepareDocument, reset]
-  // );
-
-  // Determine if ready to sign
   const handleFileAccepted = async (file) => {
     if (!file) {
       setFile(null);
@@ -144,7 +109,7 @@ export default function App1() {
 
     setFile(file);
     try {
-      const result = await signPdf(file, address);
+      const result = await signPdf(file, address, fetchDocuments);
       addDocument({
         id: result.documentId,
         name: file.name,
@@ -175,10 +140,6 @@ export default function App1() {
 
   const isWalletConnected =
     address && typeof address === "string" && address.length > 0;
-
-  // const isReady = useMemo(() => {
-  //   return validatedFile && isWalletConnected && !isSdkInitializing;
-  // }, [validatedFile, isWalletConnected, isSdkInitializing]);
 
   // Sign document handler
   const handleSignDocument = useCallback(async () => {
@@ -226,6 +187,8 @@ export default function App1() {
     addDocument,
   ]);
 
+  const [document, setDocuments] = useState([]);
+
   return (
     <div className="app-container">
       <h2>
@@ -258,11 +221,7 @@ export default function App1() {
                     style={{ width: "100%", height: "500px", border: "none" }}
                   />
                 ) : (
-                  <PdfPreview
-                    file={file}
-                    // onLoadSuccess={() => {}}
-                    // onLoadError={() => {}}
-                  />
+                  <PdfPreview file={file} />
                 )}
 
                 {error && <div className="error-message">{error.message}</div>}
@@ -275,19 +234,8 @@ export default function App1() {
               />
             )}
 
-            {/* {signatureData && (
-            <a
-              href={`https://app.ethsign.xyz/sign/${signatureData.documentId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="signed-document-link"
-            >
-              View Signed Document
-            </a>
-          )} */}
             <div className="card history-card">
               <DocumentHistory
-                documents={documents}
                 onSelectDocument={(docId) => {
                   const doc = documents.find((d) => d.id === docId);
                   if (doc) setSelectedDoc(doc);
