@@ -9,6 +9,7 @@ import TransactionTimeline from "./components/TransactionTimeline";
 import ErrorBoundary from "./components/ErrorBoundary";
 import VerifySignature2 from "./components/VerifySignature2";
 import Header from "./components/Header";
+import VerifyDocument from "./components/VerifyDocument";
 import "./App.css";
 
 export default function App1() {
@@ -245,7 +246,7 @@ export default function App1() {
             </div>
             <div className="card verify-card">
               <ErrorBoundary>
-                <VerifySignature2
+                <VerifyDocument
                   selectedDocument={selectedDoc}
                   address={address}
                 />
