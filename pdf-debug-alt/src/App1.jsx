@@ -9,6 +9,7 @@ import TransactionTimeline from "./components/TransactionTimeline";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Header from "./components/Header";
 import VerifyDocument from "./components/VerifyDocument";
+import useDocumentStore from "./hooks/store/documentStore";
 import "./App.css";
 
 export default function App1() {
@@ -99,6 +100,8 @@ export default function App1() {
     }
     return null;
   }, []);
+
+  const fetchDocuments = useDocumentStore((state) => state.fetchDocuments);
 
   const handleFileAccepted = async (file) => {
     if (!file) {

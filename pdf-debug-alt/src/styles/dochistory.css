@@ -123,9 +123,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
     margin: 1.5rem auto;
-    /* width: 100%; */
-    /* max-width: 900px; */
-    /* transition: width 0.3s ease; */
   }
   .document-history h3 {
     margin-bottom: 20px;
@@ -145,6 +142,39 @@
   }
   .txtHash {
     font-size: 0.5rem;
+  }
+  .file-link {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .document-history {
+    text-align: left;
+    background-color: rgb(243, 242, 247);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+  }
+  .document-history h3 {
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+    color: #333;
+  }
+  .txtFilename {
+    font-size: 0.5rem;
+    color: red;
+    font-weight: 700;
+  }
+  .txtSigner {
+    font-size: 0.5rem;
+  }
+  .txtSigned {
+    font-size: 0.5rem;
+  }
+  .txtHash {
+    font-size: 0.4rem;
   }
   .file-link {
     font-size: 0.7rem;
