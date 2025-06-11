@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import WalletButton from "./components/WalletButton";
-import FileDropzone from "./components/FileDropzone";
+import FileDropzone from "./components/FileDropZone";
 import PdfPreview from "./components/PdfPreview";
 import usePdfSigner2 from "./hooks/usePdfSigner2";
 import useDocumentHistory from "./hooks/useDocumentHistory";
 import DocumentHistory from "./components/DocumentHistory";
 import TransactionTimeline from "./components/TransactionTimeline";
 import ErrorBoundary from "./components/ErrorBoundary";
-import VerifySignature2 from "./components/VerifySignature2";
 import Header from "./components/Header";
 import VerifyDocument from "./components/VerifyDocument";
 import "./App.css";
@@ -188,32 +187,30 @@ export default function App1() {
     addDocument,
   ]);
 
-  const [document, setDocuments] = useState([]);
-
   return (
     <div className="app-container">
-      <h2>
-        <Header />
-      </h2>
-      <WalletButton
-        isConnected={isConnected}
-        address={address}
-        onConnect={handleConnect}
-        onDisconnect={handleDisconnect}
-      />
+      <div className="card-container">
+        <h2>
+          <Header />
+        </h2>
+        <WalletButton
+          isConnected={isConnected}
+          address={address}
+          onConnect={handleConnect}
+          onDisconnect={handleDisconnect}
+        />
+      </div>
 
       {isConnected && (
         <div className="main-content">
-          <div className="upload-preview-container">
-            <div className="card upload-card">
-              <FileDropzone
-                onFileAccepted={handleFileAccepted}
-                disabled={!isConnected || isSdkInitializing}
-              />
-            </div>
+          <div className="">
+            <FileDropzone
+              onFileAccepted={handleFileAccepted}
+              disabled={!isConnected || isSdkInitializing}
+            />
 
             {file && (
-              <div className="card preview-card" ref={pdfContainerRef}>
+              <div className="preview-card" ref={pdfContainerRef}>
                 <h3>Document Preview</h3>
                 {documentPreview ? (
                   <iframe
@@ -234,24 +231,20 @@ export default function App1() {
                 steps={["PDF Uploaded", "Signing", "Completed"]}
               />
             )}
+            <DocumentHistory
+              onSelectDocument={(docId) => {
+                const doc = documents.find((d) => d.id === docId);
+                if (doc) setSelectedDoc(doc);
+              }}
+              selectedDocId={selectedDoc?.id}
+            />
 
-            <div className="card history-card">
-              <DocumentHistory
-                onSelectDocument={(docId) => {
-                  const doc = documents.find((d) => d.id === docId);
-                  if (doc) setSelectedDoc(doc);
-                }}
-                selectedDocId={selectedDoc?.id}
+            <ErrorBoundary>
+              <VerifyDocument
+                selectedDocument={selectedDoc}
+                address={address}
               />
-            </div>
-            <div className="card verify-card">
-              <ErrorBoundary>
-                <VerifyDocument
-                  selectedDocument={selectedDoc}
-                  address={address}
-                />
-              </ErrorBoundary>
-            </div>
+            </ErrorBoundary>
           </div>
         </div>
       )}

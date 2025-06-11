@@ -1,59 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { format } from "date-fns";
-// import "../styles/dochistory.css";
-
-// export default function DocumentHistory() {
-//   const [documents, setDocuments] = useState([]);
-
-//   useEffect(() => {
-//     async function fetchDocuments() {
-//       try {
-//         const response = await fetch("http://localhost:5000/documents");
-//         const data = await response.json();
-//         setDocuments(data);
-//       } catch (error) {
-//         console.error("Failed to fetch documents:", error);
-//       }
-//     }
-
-//     fetchDocuments();
-//   }, []);
-
-//   return (
-//     <div className="document-history">
-//       <h3>Document History</h3>
-//       {documents.length === 0 ? (
-//         <p>No signed documents found.</p>
-//       ) : (
-//         <ul className="history-list">
-//           {documents.map((doc, index) => (
-//             <li key={index} className="history-item">
-//               <p>
-//                 <strong>Filename:</strong> {doc.filename}
-//               </p>
-//               <p>
-//                 <strong>Signer:</strong> {doc.signer}
-//               </p>
-//               <p>
-//                 <strong>Signed At:</strong>{" "}
-//                 {format(new Date(doc.signedAt), "PPPppp")}
-//               </p>
-//               <p>
-//                 <strong>Hash:</strong> {doc.hash}
-//               </p>
-//               <p>
-//                 <strong>View:</strong>{" "}
-//                 <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">
-//                   Open PDF
-//                 </a>
-//               </p>
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// }
 import { useEffect, useState } from "react";
 import useDocumentStore from "../hooks/store/documentStore";
 import { format } from "date-fns";
@@ -90,12 +34,14 @@ export default function DocumentHistory({ onSelectDocument, selectedDocId }) {
             }`}
             onClick={() => onSelectDocument(doc.id)}
           >
-            <div>
+            <p className="txtFilename">
               <strong>{doc.filename}</strong>
-            </div>
-            <div>Signer: {doc.signer}</div>
-            <div>Signed: {new Date(doc.signedAt).toLocaleString()}</div>
-            <div>Hash: {doc.hash}</div>
+            </p>
+            <p className="txtSigner">Signer: {doc.signer}</p>
+            <p className="txtSigned">
+              Signed: {new Date(doc.signedAt).toLocaleString()}
+            </p>
+            <p className="txtHash">Hash: {doc.hash}</p>
             <a
               href={doc.fileUrl}
               target="_blank"

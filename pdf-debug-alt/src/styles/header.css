@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Allura&family=Playfair+Display:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap");
+
+/* Header layout */
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.header-content {
+  max-width: 90%;
+}
+
+/* Title Styling */
+.intro {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.italic-message {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 1.1rem; /* slightly bigger than normal */
+  color: #666; /* or use var(--gray) if defined */
+}
+.intro .word1 {
+  font-family: "Allura", cursive;
+  font-size: 3rem;
+  color: #264e3f;
+  color: #fff;
+  letter-spacing: 10.5px;
+  overflow-wrap: break-world;
+  margin-right: 10px;
+}
+.intro .word2 {
+  font-family: "Playfair Display", serif;
+  font-weight: 300;
+  font-size: 2.5rem;
+  color: #264e3f;
+  margin-right: 10px;
+}
+
+.intro .word3 {
+  font-family: "Playfair Display", serif;
+  font-weight: 600;
+  font-size: 2.2rem;
+  color: #264e3f;
+  margin-right: 10px;
+}
+/* Subtext Styling */
+.italic-message {
+  font-style: italic;
+  color: #444;
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .intro {
+    font-size: 1rem;
+    /* margin-bottom: 0.1rem; */
+  }
+
+  .italic-message {
+    font-size: 0.9rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+  .italic-message {
+    font-family: "Playfair Display", serif;
+    font-style: italic;
+    font-size: 0.9rem; /* slightly bigger than normal */
+    color: #666; /* or use var(--gray) if defined */
+  }
+  .intro .word1 {
+    font-family: "Allura", cursive;
+    font-size: 1.5rem;
+    color: #264e3f;
+    color: #fff;
+    letter-spacing: 10.5px;
+    overflow-wrap: break-world;
+    margin-right: 10px;
+  }
+  .intro .word2 {
+    font-family: "Playfair Display", serif;
+    font-weight: 100;
+    font-size: 1.5rem;
+    color: #264e3f;
+    margin-right: 10px;
+  }
+
+  .intro .word3 {
+    font-family: "Playfair Display", serif;
+    font-weight: 150;
+    font-size: 1.5rem;
+    color: #264e3f;
+    margin-right: 10px;
+  }
+}

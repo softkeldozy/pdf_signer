@@ -1,7 +1,9 @@
+import "../styles/header.css";
+
 const Header = () => {
   return (
-    <header className="flex-center" style={{ marginBottom: "3rem" }}>
-      <div style={{ textAlign: "center" }}>
+    <header className="header">
+      <div className="header-content">
         <h1 className="intro">
           <span className="word1">PDF</span>
           <span className="word2">Signing</span>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/walletConect.css";
 
 export default function WalletButton({
   onConnect,
@@ -46,16 +47,7 @@ export default function WalletButton({
   };
 
   return (
-    <div
-      style={{
-        padding: "15px",
-        margin: "18px",
-        border: "1px solid #e0e0e0",
-        borderRadius: "80px",
-        marginBottom: "20px",
-        width: "95%",
-      }}
-    >
+    <div className="address">
       {/* Error Display */}
       {error && (
         <div
@@ -73,19 +65,19 @@ export default function WalletButton({
 
       {/* Connection UI */}
       {isConnected ? (
-        <div>
+        <div className="connected">
           <p className="addyTxt">Connected: {address}</p>
           <button
             className="walletBtn"
-            onClick={onDisconnect}
             style={{
-              padding: "8px 16px",
+              padding: "10px 20px",
               background: "#f44336",
               color: "white",
               border: "none",
-              borderRadius: "4px",
+              borderRadius: "5px",
               cursor: "pointer",
             }}
+            onClick={onDisconnect}
           >
             Disconnect
           </button>

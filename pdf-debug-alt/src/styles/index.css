@@ -6,20 +6,12 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   background-color: #ff870f;
   color: var(--dark);
   line-height: 1.6;
 }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
 .card {
   background: white;
   border-radius: var(--border-radius);

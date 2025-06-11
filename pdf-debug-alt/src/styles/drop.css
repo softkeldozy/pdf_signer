@@ -1,14 +1,30 @@
-.dropzone {
+/* .dropzone {
   border: 2px dashed #ccc;
   padding: 20px;
   text-align: center;
-}
+} */
 
-.dropzone input[type="file"] {
-  display: none;
-}
+@media (max-width: 480px) {
+  .dropzone {
+    /* width: 100%; */
+    /* height: 50px; */
+  }
 
-.dropzone p {
-  margin-top: 10px;
-  color: #666;
+  .card-container {
+    color: red;
+  }
+  .card-container h2 {
+    font-size: 0.9rem;
+    font-family: "Courier New", Courier, monospace;
+    font-style: italic;
+    font-weight: 400;
+    background-color: rgb(138, 127, 241);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin: 1.5rem auto;
+    width: 100%; /* Default for smaller screens */
+    max-width: 900px; /* Optional limit for large screens */
+    transition: width 0.3s ease;
+  }
 }

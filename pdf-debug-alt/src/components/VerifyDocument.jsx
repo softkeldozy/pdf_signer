@@ -38,14 +38,9 @@ export default function VerifyDocument() {
   };
 
   return (
-    <div className="verify-section" style={{ marginTop: "1rem" }}>
+    <div className="verify-section">
       <h3>Verify a Signed PDF</h3>
-      <input
-        type="file"
-        accept="application/pdf"
-        onChange={handleFileChange}
-        // style={{ display: "none" }}
-      />
+      <input type="file" accept="application/pdf" onChange={handleFileChange} />
       <button
         className="PdfVerifyBtn"
         variant="contained"
