@@ -22,6 +22,14 @@ export default function DocumentHistory({ onSelectDocument, selectedDocId }) {
     setCurrentPage(newPage);
   };
 
+  function truncateMiddle(str, maxLength = 32) {
+    if (!str || str.length <= maxLength) return str;
+
+    const front = Math.ceil((maxLength - 4) / 2);
+    const back = Math.floor((maxLength - 4) / 2);
+    return `${str.slice(0, front)}...${str.slice(str.length - back)}`;
+  }
+
   return (
     <div className="document-history">
       <h3>Document History</h3>
@@ -41,7 +49,7 @@ export default function DocumentHistory({ onSelectDocument, selectedDocId }) {
             <p className="txtSigned">
               Signed: {new Date(doc.signedAt).toLocaleString()}
             </p>
-            <p className="txtHash">Hash: {doc.hash}</p>
+            <p className="txtHash">Hash: {truncateMiddle(doc.hash)}</p>
             <a
               href={doc.fileUrl}
               target="_blank"
