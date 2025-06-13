@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Allura&family=Playfair+Display:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap");
+
 .document-history {
   text-align: left;
   padding: 20px;
@@ -8,6 +11,7 @@
 .document-history h3 {
   margin-bottom: 20px;
   font-size: 1.6rem;
+  font-family: "Playfair Display", serif;
   color: #333;
 }
 
@@ -39,6 +43,7 @@
 .document-history {
   text-align: left;
   padding: 1rem;
+  font-family: "Playfair Display", serif;
   max-width: 700px;
   margin: auto;
 }
@@ -108,30 +113,32 @@
 @media (max-width: 480px) {
   .document-history {
     text-align: left;
-    background-color: rgb(243, 242, 247);
+    background-color: rgb(10, 9, 14);
     border-radius: 8px;
+    font-family: "Playfair Display", serif;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
     margin: 1.5rem auto;
   }
   .document-history h3 {
     margin-bottom: 20px;
+    font-family: "Playfair Display", serif;
     font-size: 1rem;
-    color: #333;
+    color: #f3ecec;
   }
   .txtFilename {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
     color: red;
     font-weight: 700;
   }
   .txtSigner {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
   }
   .txtSigned {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
   }
   .txtHash {
-    font-size: 0.5rem;
+    font-size: 0.8rem;
   }
   .file-link {
     font-size: 0.7rem;

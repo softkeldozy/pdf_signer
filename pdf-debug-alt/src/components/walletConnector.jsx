@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function WalletConnector({ onConnect }) {
   const [error, setError] = useState(null);
@@ -23,9 +25,35 @@ export default function WalletConnector({ onConnect }) {
 
       // 3. Return the first account
       onConnect(accounts[0]);
+
+      // Show success toast
+      toast.success("Wallet connected successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
     } catch (err) {
       console.error("Connection error:", err);
-      setError(err.code === 4001 ? "Connection rejected" : err.message);
+      // setError(err.code === 4001 ? "Connection rejected" : err.message);
+
+      if (err.code === 4001) {
+        // User rejected connection
+        toast.error("You rejected the wallet connection", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        setError("Connection rejected");
+      } else {
+        // Other errors
+        toast.error(err.message, {
+          position: "top-right",
+          autoClose: 5000,
+        });
+        setError(err.message);
+      }
     }
   };
 

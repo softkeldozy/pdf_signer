@@ -10,6 +10,8 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Header from "./components/Header";
 import VerifyDocument from "./components/VerifyDocument";
 import useDocumentStore from "./hooks/store/documentStore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
 export default function App1() {
@@ -120,6 +122,17 @@ export default function App1() {
       });
     } catch (err) {
       console.error("Signing failed:", err);
+
+      // ✅ Check for user rejection
+      if (
+        err.message?.includes("user rejected") ||
+        err.message?.includes("User rejected") ||
+        err.code === 4001
+      ) {
+        toast.error("You rejected the transaction signing.");
+      } else {
+        toast.error(`Signing failed: ${err.message}`);
+      }
     }
   };
 
@@ -203,7 +216,10 @@ export default function App1() {
           onDisconnect={handleDisconnect}
         />
       </div>
-
+      <div>
+        {/* User rejecting signing of pdf */}
+        <ToastContainer position="top-right" autoClose={7000} />
+      </div>
       {isConnected && (
         <div className="main-content">
           <FileDropzone
@@ -224,7 +240,7 @@ export default function App1() {
                 <PdfPreview file={file} />
               )}
 
-              {error && <div className="error-message">{error.message}</div>}
+              {/* {error && <div className="error-message">{error.message}</div>} */}
             </div>
           )}
           {isSdkInitializing && (
