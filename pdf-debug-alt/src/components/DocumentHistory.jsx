@@ -43,7 +43,7 @@ export default function DocumentHistory({ onSelectDocument, selectedDocId }) {
             onClick={() => onSelectDocument(doc.id)}
           >
             <p className="txtFilename">
-              <strong>{doc.filename}</strong>
+              <strong>{truncateMiddle(doc.filename)}</strong>
             </p>
             <p className="txtSigner">Signer: {doc.signer}</p>
             <p className="txtSigned">

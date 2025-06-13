@@ -206,49 +206,45 @@ export default function App1() {
 
       {isConnected && (
         <div className="main-content">
-          <div className="">
-            <FileDropzone
-              onFileAccepted={handleFileAccepted}
-              disabled={!isConnected || isSdkInitializing}
+          <FileDropzone
+            onFileAccepted={handleFileAccepted}
+            disabled={!isConnected || isSdkInitializing}
+          />
+
+          {file && (
+            <div className="preview-card" ref={pdfContainerRef}>
+              <h3>Document Preview</h3>
+              {documentPreview ? (
+                <iframe
+                  src={documentPreview}
+                  title="PDF Preview"
+                  style={{ width: "100%", height: "500px", border: "none" }}
+                />
+              ) : (
+                <PdfPreview file={file} />
+              )}
+
+              {error && <div className="error-message">{error.message}</div>}
+            </div>
+          )}
+          {isSdkInitializing && (
+            <TransactionTimeline
+              currentStep={status === "signing" ? 1 : 0}
+              steps={["PDF Uploaded", "Signing", "Completed"]}
             />
+          )}
+          <DocumentHistory
+            onSelectDocument={(docId) => {
+              const doc = documents.find((d) => d.id === docId);
+              if (doc) setSelectedDoc(doc);
+            }}
+            selectedDocId={selectedDoc?.id}
+          />
 
-            {file && (
-              <div className="preview-card" ref={pdfContainerRef}>
-                <h3>Document Preview</h3>
-                {documentPreview ? (
-                  <iframe
-                    src={documentPreview}
-                    title="PDF Preview"
-                    style={{ width: "100%", height: "500px", border: "none" }}
-                  />
-                ) : (
-                  <PdfPreview file={file} />
-                )}
-
-                {error && <div className="error-message">{error.message}</div>}
-              </div>
-            )}
-            {isSdkInitializing && (
-              <TransactionTimeline
-                currentStep={status === "signing" ? 1 : 0}
-                steps={["PDF Uploaded", "Signing", "Completed"]}
-              />
-            )}
-            <DocumentHistory
-              onSelectDocument={(docId) => {
-                const doc = documents.find((d) => d.id === docId);
-                if (doc) setSelectedDoc(doc);
-              }}
-              selectedDocId={selectedDoc?.id}
-            />
-
-            <ErrorBoundary>
-              <VerifyDocument
-                selectedDocument={selectedDoc}
-                address={address}
-              />
-            </ErrorBoundary>
-          </div>
+          <ErrorBoundary>
+            <VerifyDocument selectedDocument={selectedDoc} address={address} />
+          </ErrorBoundary>
+          <div className=""></div>
         </div>
       )}
     </div>

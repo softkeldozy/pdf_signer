@@ -1,4 +1,3 @@
-// src/components/VerifyDocument.jsx
 import { useState } from "react";
 import { keccak256 } from "viem";
 import useDocumentStore from "../hooks/store/documentStore";
@@ -26,7 +25,7 @@ export default function VerifyDocument() {
     if (match) {
       setResult({
         verified: true,
-        message: `✅ File is valid and signed by ${match.signer}`,
+        message: `✅ File is verified, signed by ${match.signer}`,
         metadata: match,
       });
     } else {
@@ -36,11 +35,19 @@ export default function VerifyDocument() {
       });
     }
   };
+  function truncateMiddle(str, maxLength = 32) {
+    if (!str || str.length <= maxLength) return str;
+
+    const front = Math.ceil((maxLength - 4) / 2);
+    const back = Math.floor((maxLength - 4) / 2);
+    return `${str.slice(0, front)}...${str.slice(str.length - back)}`;
+  }
 
   return (
-    <div className="verify-section">
+    <div className="card verify-section">
       <h3>Verify a Signed PDF</h3>
       <input type="file" accept="application/pdf" onChange={handleFileChange} />
+
       <button
         className="PdfVerifyBtn"
         variant="contained"
@@ -51,20 +58,26 @@ export default function VerifyDocument() {
       </button>
 
       {result && (
-        <div className="verify-result">
-          <p>{result.message}</p>
+        <div className=" verify-result">
+          <p className="signerTxt">
+            <strong>{result.message}</strong>
+          </p>
           {result.metadata && (
             <div>
-              <p>
-                <strong>Signer:</strong> {result.metadata.signer}
+              <p className="hashTxt">
+                <strong>Tx Hash:</strong> {truncateMiddle(result.metadata.hash)}
               </p>
-              <p>
+              <p className="signedTxt">
                 <strong>Signed At:</strong>{" "}
                 {new Date(result.metadata.signedAt).toLocaleString()}
               </p>
               <p>
-                <strong>File:</strong>{" "}
-                <a href={result.metadata.fileUrl} target="_blank">
+                <strong className="fileTxt">File:</strong>{" "}
+                <a
+                  className="viewlink"
+                  href={result.metadata.fileUrl}
+                  target="_blank"
+                >
                   View
                 </a>
               </p>
