@@ -120,8 +120,11 @@ export default function App1() {
         name: file.name,
         txHash: result.transactionHash,
       });
+
+      // Clear file after successful sign
+      setFile(null);
     } catch (err) {
-      console.error("Signing failed:", err);
+      toast.error("Signing failed:", err);
 
       // ✅ Check for user rejection
       if (
@@ -130,8 +133,12 @@ export default function App1() {
         err.code === 4001
       ) {
         toast.error("You rejected the transaction signing.");
+        // ✅ Clear file after failed sign
+        setFile(null);
       } else {
         toast.error(`Signing failed: ${err.message}`);
+        // Clear file after failed sign
+        setFile(null);
       }
     }
   };
