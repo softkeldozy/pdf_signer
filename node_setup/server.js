@@ -93,6 +93,32 @@ app.post("/documents", (req, res) => {
   });
 });
 
+// Del route
+app.post("/delete-upload", (req, res) => {
+  try {
+    const { fileUrl } = req.body;
+
+    if (!fileUrl) {
+      return res.status(400).json({ error: "fileUrl is required" });
+    }
+
+    // Extract the filename from URL (assuming http://localhost:5000/uploads/filename.pdf)
+    const filename = path.basename(fileUrl);
+    const filePath = path.join(uploadsDir, filename);
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+      console.log(`Deleted file: ${filePath}`);
+      return res.status(200).json({ message: "File deleted successfully" });
+    } else {
+      return res.status(404).json({ error: "File not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    return res.status(500).json({ error: "Server error while deleting file" });
+  }
+});
+
 // 🚀 Start the server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);

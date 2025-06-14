@@ -97,28 +97,27 @@ export default function usePdfSigner2(options = {}) {
 
   const signPdf = useCallback(
     async (file, address, onComplete) => {
+      let fileUrl;
       try {
         setState((prev) => ({ ...prev, status: "uploading" }));
-
-        // Upload to backend first
-        const fileUrl = await uploadPDFToBackend(file);
-        // Optional: validate URL
+        //  1. Upload first
+        fileUrl = await uploadPDFToBackend(file);
         if (!fileUrl) throw new Error("No URL returned from backend");
 
-        // ✅ 2. Update state: signing in progress
         setState((prev) => ({ ...prev, status: "signing" }));
 
-        // ✅ 3. Initialize SDK (SignProtocolClient)
+        //  2. Initialize SDK (SignProtocolClient)
         const client = await initializeSDK();
 
-        // ✅ 4.Read file and Hash the file (you’re already doing this)
+        //  3.Read file and Hash the file (you’re already doing this)
         const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         const fileHash = keccak256(uint8Array); // returns 0x..
         const filename = file.name;
         const signedAt = new Date().toISOString();
 
-        // ✅ 5. Send attestation with URL in metadata
+        //  4. Prompt wallet signature with URL in data
+
         const result = await client.createAttestation({
           schemaId: 0x2419,
           data: {
@@ -126,7 +125,7 @@ export default function usePdfSigner2(options = {}) {
           },
         });
 
-        // 6. Send metadata to /documents
+        // 5. Send metadata to /documents
         await axios.post("http://localhost:5000/documents", {
           fileUrl,
           filename,
@@ -134,13 +133,13 @@ export default function usePdfSigner2(options = {}) {
           signedAt,
           hash: fileHash,
         });
-        // Refresh Document History
+
         // Call the callback to fetch updated list
         if (onComplete) {
           await onComplete((prev) => prev + 1);
         }
 
-        // ✅ 7. Update state: success
+        //  6. Update state: success
         setState((prev) => ({
           ...prev,
           status: "success",
@@ -149,6 +148,17 @@ export default function usePdfSigner2(options = {}) {
 
         return result;
       } catch (error) {
+        // ⚠️ If signing failed, remove uploaded file
+        if (fileUrl) {
+          try {
+            await axios.post("http://localhost:5000/delete-upload", {
+              fileUrl: fileUrl,
+            });
+          } catch (deleteError) {
+            toast.error("Failed to delete upload file: ", deleteError);
+          }
+        }
+
         setState((prev) => ({
           ...prev,
           status: "error",
