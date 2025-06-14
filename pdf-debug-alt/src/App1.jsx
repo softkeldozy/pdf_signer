@@ -120,7 +120,7 @@ export default function App1() {
         name: file.name,
         txHash: result.transactionHash,
       });
-
+      toast.success("Successful");
       // Clear file after successful sign
       setFile(null);
     } catch (err) {
@@ -212,7 +212,7 @@ export default function App1() {
 
   return (
     <div className="app-container">
-      <div className="card-container">
+      <div className="card heada">
         <h2>
           <Header />
         </h2>
@@ -246,7 +246,7 @@ export default function App1() {
               ) : (
                 <PdfPreview file={file} />
               )}
-
+              {/* using state to debug */}
               {/* {error && <div className="error-message">{error.message}</div>} */}
             </div>
           )}
@@ -267,7 +267,6 @@ export default function App1() {
           <ErrorBoundary>
             <VerifyDocument selectedDocument={selectedDoc} address={address} />
           </ErrorBoundary>
-          <div className=""></div>
         </div>
       )}
     </div>

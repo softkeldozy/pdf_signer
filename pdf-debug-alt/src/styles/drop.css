@@ -1,21 +1,13 @@
-/* .dropzone {
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-} */
+.upload {
+  color: rgb(106, 106, 247);
+  font-family: "Times New Roman", Times;
+  background-color: rgb(243, 231, 231);
+}
 
 @media (max-width: 480px) {
-  .dropzone {
-    /* width: 100%; */
-    /* height: 50px; */
-  }
-
-  .card-container {
-    color: red;
-  }
   .card-container h2 {
     font-size: 0.9rem;
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Times New Roman", Times;
     font-style: italic;
     font-weight: 400;
     background-color: rgb(138, 127, 241);
@@ -23,8 +15,8 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
     margin: 1.5rem auto;
-    width: 100%; /* Default for smaller screens */
-    max-width: 900px; /* Optional limit for large screens */
+    width: 100%;
+    max-width: 900px;
     transition: width 0.3s ease;
   }
 }

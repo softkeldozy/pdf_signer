@@ -31,7 +31,7 @@ export default function DocumentHistory({ onSelectDocument, selectedDocId }) {
   }
 
   return (
-    <div className="document-history">
+    <div className="card document-history">
       <h3>Document History</h3>
       <ul className="history-list">
         {currentDocs.map((doc, i) => (

@@ -1,6 +1,6 @@
 h3 {
-  font-family: "Roboto", sans-serif;
-  color: #333;
+  font-family: "Times New Roman", Times;
+  color: whitesmoke;
   margin-bottom: 16px;
 }
 
@@ -9,16 +9,14 @@ h3 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #ff962c;
 }
 /* File input style */
 input[type="file"] {
   padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Times New Roman", Times;
   font-size: 20px;
   background-color: #fafafa;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 16px;
 }
 
@@ -29,7 +27,7 @@ input[type="file"] {
   padding: 10px 24px;
   border: none;
   border-radius: 4px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Times New Roman", Times;
   font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -48,7 +46,7 @@ input[type="file"] {
 .verify-result {
   width: 100%;
 
-  /* background: green; */
+  background: #ff962c;
 }
 
 /* ============================= */
@@ -68,7 +66,7 @@ input[type="file"] {
     padding: 10px 24px;
     border: none;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 25px;
     width: 200px;
     cursor: pointer;
@@ -79,7 +77,7 @@ input[type="file"] {
     padding: 10px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 25px;
     width: 100%;
     background-color: #fafafa;
@@ -93,7 +91,7 @@ input[type="file"] {
 /* ============================= */
 @media (max-width: 480px) {
   h3 {
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     color: #333;
     margin-bottom: 5px;
     font-size: 1rem;
@@ -102,7 +100,7 @@ input[type="file"] {
     padding: 8.5px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 15px;
     background-color: #fafafa;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -114,7 +112,7 @@ input[type="file"] {
     padding: 10px 24px;
     border: none;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -127,22 +125,25 @@ input[type="file"] {
   .signerTxt {
     margin-top: 10px;
     font-size: 0.7rem;
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
   }
   .signedTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
   .fileTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
   .hashTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
 }
 
 @media (max-width: 450px) {
   h3 {
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     color: #333;
     margin-bottom: 5px;
     font-size: 0.8rem;
@@ -151,7 +152,7 @@ input[type="file"] {
     padding: 8.5px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     background-color: #fafafa;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -165,7 +166,7 @@ input[type="file"] {
     margin-bottom: 15px;
     border: none;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -177,6 +178,7 @@ input[type="file"] {
     font-weight: 500;
     word-break: break-word;
     text-align: left;
+    font-family: "Times New Roman", Times;
   }
 
   .verify-message.success {
@@ -193,29 +195,32 @@ input[type="file"] {
   }
   .signerTxt {
     font-size: 0.7rem;
-    /* text-align: left; */
+    font-family: "Times New Roman", Times;
   }
   .signedTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
   .fileTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
   .hashTxt {
     font-size: 0.8rem;
+    font-family: "Times New Roman", Times;
   }
 }
 /* TODO fix media screen here */
 @media (min-width: 320px) and (max-width: 374px) {
   .signerTxt {
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
     /* font-size: 0.5rem; */
   }
 }
 
 @media (max-width: 375px) {
   h3 {
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     color: #333;
     margin-bottom: 5px;
     font-size: 0.7rem;
@@ -224,7 +229,7 @@ input[type="file"] {
     padding: 8.5px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     background-color: #fafafa;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -238,7 +243,7 @@ input[type="file"] {
     margin-bottom: 15px;
     border: none;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -250,6 +255,7 @@ input[type="file"] {
     font-weight: 500;
     word-break: break-word;
     text-align: left;
+    font-family: "Times New Roman", Times;
   }
 
   .verify-message.success {
@@ -266,28 +272,28 @@ input[type="file"] {
   }
   .signerTxt {
     font-size: 0.6rem;
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
   }
   .signedTxt {
     font-size: 0.6rem;
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
   }
   .fileTxt {
     font-size: 0.6rem;
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
   }
   .viewlink {
     font-size: 0.75rem;
   }
   .hashTxt {
     font-size: 0.6rem;
-    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+    font-family: "Times New Roman", Times;
   }
 }
 
 @media (max-width: 390px) {
   h3 {
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     color: #333;
     margin-bottom: 5px;
     font-size: 0.7rem;
@@ -296,7 +302,7 @@ input[type="file"] {
     padding: 8.5px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     background-color: #fafafa;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -310,7 +316,7 @@ input[type="file"] {
     margin-bottom: 15px;
     border: none;
     border-radius: 4px;
-    font-family: "Roboto", sans-serif;
+    font-family: "Times New Roman", Times;
     font-size: 12px;
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.2s ease;
@@ -322,6 +328,8 @@ input[type="file"] {
     font-weight: 500;
     word-break: break-word;
     text-align: left;
+
+    font-family: "Times New Roman", Times;
   }
 
   .verify-message.success {
@@ -338,18 +346,22 @@ input[type="file"] {
   }
   .signerTxt {
     font-size: 0.65rem;
-    /* text-align: left; */
+    font-family: "Times New Roman", Times;
   }
   .signedTxt {
     font-size: 0.65rem;
+    font-family: "Times New Roman", Times;
   }
   .fileTxt {
     font-size: 0.65rem;
+    font-family: "Times New Roman", Times;
   }
   .viewlink {
     font-size: 0.75rem;
+    font-family: "Times New Roman", Times;
   }
   .hashTxt {
     font-size: 0.65rem;
+    font-family: "Times New Roman", Times;
   }
 }

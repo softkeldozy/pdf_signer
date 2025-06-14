@@ -41,7 +41,7 @@ export default function WalletButton({
       // 4. Update parent state
       onConnect(accounts[0]);
     } catch (err) {
-      console.error("Wallet connection failed:", err);
+      toast.error("Wallet connection failed:", err);
       setError(err.message || "Connection failed");
     } finally {
       setIsLoading(false);

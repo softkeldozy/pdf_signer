@@ -58,14 +58,14 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 2rem;
 } */
-.card-container {
-  background-color: rgb(138, 127, 241);
+.heada {
+  background-color: rgb(11, 11, 19);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   margin: 1.5rem auto;
   width: 100%; /* Default for smaller screens */
-  max-width: 900px; /* Optional limit for large screens */
+  /* max-width: 900px; */
   transition: width 0.3s ease;
 }
 
@@ -94,13 +94,6 @@
   text-decoration: none;
   margin-top: 20px;
 }
-
-/* Add responsive behavior */
-/* @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
-  } */
-
 .signing-section {
   order: 1;
 }
@@ -134,17 +127,17 @@
 }
 
 /* Material-style card */
-.card {
+/* .card {
   background: rgb(211, 15, 15);
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   width: 100%;
-}
-.upload-card {
+} */
+/* .upload-card {
   width: 100%;
   background: yellow;
-}
+} */
 /* PDF iframe preview */
 .preview-card iframe {
   border: none;

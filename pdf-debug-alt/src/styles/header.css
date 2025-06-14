@@ -11,20 +11,19 @@
 }
 
 .header-content {
-  max-width: 90%;
+  max-width: 100%;
 }
 
 /* Title Styling */
 .intro {
-  /* font-size: 2rem; */
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 .italic-message {
   font-family: "Playfair Display", serif;
   font-style: italic;
-  font-size: 1.1rem; /* slightly bigger than normal */
-  color: #666; /* or use var(--gray) if defined */
+  font-size: 1.2rem; /* slightly bigger than normal */
+  color: white; /* or use var(--gray) if defined */
 }
 .intro .word1 {
   font-family: "Allura", cursive;
@@ -51,11 +50,6 @@
   margin-right: 10px;
 }
 /* Subtext Styling */
-.italic-message {
-  font-style: italic;
-  color: #444;
-  font-size: 1rem;
-}
 
 /* Responsive adjustments */
 @media (max-width: 480px) {

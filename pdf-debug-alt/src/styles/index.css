@@ -13,7 +13,8 @@ body {
   line-height: 1.6;
 }
 .card {
-  background: white;
+  /* background: white; */
+  /* background: #ff962c; */
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 2rem;

@@ -9,7 +9,7 @@ const Header = () => {
           <span className="word2">Signing</span>
           <span className="word3">DApp</span>
         </h1>
-        <p className="text-gray italic-message">
+        <p className="text-white italic-message">
           Securely sign documents on the blockchain using <span>Sign</span> SDK
         </p>
       </div>
