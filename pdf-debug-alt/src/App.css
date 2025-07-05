@@ -59,13 +59,14 @@
   margin-bottom: 2rem;
 } */
 .heada {
-  background-color: rgb(11, 11, 19);
+  background-color: rgb(0, 0, 0, 0.7);
+  /* background-color: transparent; */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   margin: 1.5rem auto;
   width: 100%; /* Default for smaller screens */
-  /* max-width: 900px; */
+  z-index: 1000;
   transition: width 0.3s ease;
 }
 
@@ -126,18 +127,6 @@
   cursor: not-allowed;
 }
 
-/* Material-style card */
-/* .card {
-  background: rgb(211, 15, 15);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  width: 100%;
-} */
-/* .upload-card {
-  width: 100%;
-  background: yellow;
-} */
 /* PDF iframe preview */
 .preview-card iframe {
   border: none;
