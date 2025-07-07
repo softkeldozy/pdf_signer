@@ -9,9 +9,8 @@
 body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   /* background-color: #ff870f; */
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  background-image: url("../assets/sign.png");
+
+  background-image: url("../assets/main background.png");
   background-repeat: no-repeat;
   background-size: cover;
   /* background-position: center; */
