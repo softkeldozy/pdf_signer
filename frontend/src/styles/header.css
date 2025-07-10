@@ -28,7 +28,7 @@
 .intro .word1 {
   font-family: "Allura", cursive;
   font-size: 3rem;
-  color: #264e3f;
+  /* color: #264e3f; */
   color: #fff;
   letter-spacing: 10.5px;
   overflow-wrap: break-world;
@@ -69,7 +69,7 @@
     font-family: "Playfair Display", serif;
     font-style: italic;
     font-size: 0.9rem; /* slightly bigger than normal */
-    color: #666; /* or use var(--gray) if defined */
+    color: whitesmoke; /* or use var(--gray) if defined */
   }
   .intro .word1 {
     font-family: "Allura", cursive;
@@ -100,7 +100,7 @@
   .intro .word1 {
     font-family: "Allura", cursive;
     font-size: 1.2rem;
-    color: #264e3f;
+    /* color: #264e3f; */
     color: #fff;
     letter-spacing: 10.5px;
     overflow-wrap: break-world;

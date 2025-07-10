@@ -1,7 +1,7 @@
 .upload {
   color: rgb(106, 106, 247);
   font-family: "Times New Roman", Times;
-  background-color: rgb(243, 231, 231);
+  background-color: rgb(0, 0, 0, 0.2);
 }
 
 @media (max-width: 480px) {
