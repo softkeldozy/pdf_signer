@@ -1,5 +1,5 @@
 import { Component } from "react";
-import "../ErrorBoundary/ErrorBoundaries.css"; // Styles for the fallback UI
+import "./ErrorBoundaries.css"; // Styles for the fallback UI
 
 export default class ErrorBoundary extends Component {
   state = {
