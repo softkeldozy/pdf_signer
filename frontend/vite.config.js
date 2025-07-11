@@ -4,6 +4,7 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 
 export default defineConfig({
   plugins: [react()],
+  base: "/",
   server: {
     open: true, // Ensure browser opens
   },
@@ -25,5 +26,4 @@ export default defineConfig({
     "process.env": {},
     global: {},
   },
-  base: "/",
 });
