@@ -2,6 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App1 from "./App1";
 import "./styles/index.css";
+import { Buffer } from "buffer";
+
+if (!window.Buffer) {
+  window.Buffer = Buffer;
+}
 
 // Option 1: Using the installed package (after running npm install)
 // import { ErrorBoundary } from 'react-error-boundary'
