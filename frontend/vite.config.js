@@ -26,4 +26,5 @@ export default defineConfig({
     "process.env": {},
     global: {},
   },
+  resolve: { alias: { buffer: "buffer" } },
 });

@@ -14,6 +14,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 
+import { Buffer } from "buffer";
+import process from "process";
+
+if (!window.Buffer) {
+  window.Buffer = Buffer;
+}
+
+if (!window.process) {
+  window.process = process;
+}
+
 export default function App1() {
   // State
   const [isConnected, setIsConnected] = useState(false);
