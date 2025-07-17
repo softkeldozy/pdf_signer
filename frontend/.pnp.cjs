@@ -73,6 +73,7 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:19.1.0"],\
           ["react-error-boundary", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.0.0"],\
           ["react-toastify", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:11.0.5"],\
+          ["rollup-plugin-node-polyfills", "npm:0.2.1"],\
           ["root-workspace-0b6124", "workspace:."],\
           ["solidity-coverage", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.8.16"],\
           ["tailwindcss", "npm:4.1.8"],\
@@ -7383,6 +7384,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["estree-walker", [\
+      ["npm:0.6.1", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/estree-walker-npm-0.6.1-fe92d0e1f6-10c0.zip/node_modules/estree-walker/",\
+        "packageDependencies": [\
+          ["estree-walker", "npm:0.6.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["esutils", [\
       ["npm:2.0.3", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/esutils-npm-2.0.3-f865beafd5-10c0.zip/node_modules/esutils/",\
@@ -9925,6 +9935,16 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["magic-string", [\
+      ["npm:0.25.9", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/magic-string-npm-0.25.9-0b51c0ea50-10c0.zip/node_modules/magic-string/",\
+        "packageDependencies": [\
+          ["magic-string", "npm:0.25.9"],\
+          ["sourcemap-codec", "npm:1.4.8"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["make-fetch-happen", [\
       ["npm:14.0.3", {\
         "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/make-fetch-happen-npm-14.0.3-23b30e8691-10c0.zip/node_modules/make-fetch-happen/",\
@@ -12146,6 +12166,38 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["rollup-plugin-inject", [\
+      ["npm:3.0.2", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/rollup-plugin-inject-npm-3.0.2-db1d368b18-10c0.zip/node_modules/rollup-plugin-inject/",\
+        "packageDependencies": [\
+          ["estree-walker", "npm:0.6.1"],\
+          ["magic-string", "npm:0.25.9"],\
+          ["rollup-plugin-inject", "npm:3.0.2"],\
+          ["rollup-pluginutils", "npm:2.8.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["rollup-plugin-node-polyfills", [\
+      ["npm:0.2.1", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/rollup-plugin-node-polyfills-npm-0.2.1-d0e4f85f30-10c0.zip/node_modules/rollup-plugin-node-polyfills/",\
+        "packageDependencies": [\
+          ["rollup-plugin-inject", "npm:3.0.2"],\
+          ["rollup-plugin-node-polyfills", "npm:0.2.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["rollup-pluginutils", [\
+      ["npm:2.8.2", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/rollup-pluginutils-npm-2.8.2-f554dd6ac5-10c0.zip/node_modules/rollup-pluginutils/",\
+        "packageDependencies": [\
+          ["estree-walker", "npm:0.6.1"],\
+          ["rollup-pluginutils", "npm:2.8.2"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["root-workspace-0b6124", [\
       ["workspace:.", {\
         "packageLocation": "./",\
@@ -12195,6 +12247,7 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:19.1.0"],\
           ["react-error-boundary", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:6.0.0"],\
           ["react-toastify", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:11.0.5"],\
+          ["rollup-plugin-node-polyfills", "npm:0.2.1"],\
           ["root-workspace-0b6124", "workspace:."],\
           ["solidity-coverage", "virtual:dc3fc578bfa5e06182a4d2be39ede0bc5b74940b1ffe0d70c26892ab140a4699787750fba175dc306292e80b4aa2c8c5f68c2a821e69b2c37e360c0dff36ff66#npm:0.8.16"],\
           ["tailwindcss", "npm:4.1.8"],\
@@ -12765,6 +12818,15 @@ const RAW_RUNTIME_STATE =
           ["buffer-from", "npm:1.1.2"],\
           ["source-map", "npm:0.6.1"],\
           ["source-map-support", "npm:0.5.21"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["sourcemap-codec", [\
+      ["npm:1.4.8", {\
+        "packageLocation": "../../../AppData/Local/Yarn/Berry/cache/sourcemap-codec-npm-1.4.8-3a1a9e60b1-10c0.zip/node_modules/sourcemap-codec/",\
+        "packageDependencies": [\
+          ["sourcemap-codec", "npm:1.4.8"]\
         ],\
         "linkType": "HARD"\
       }]\
